@@ -9,10 +9,10 @@
 
 class TimeHandler {
 public:
-        TimeHandler();
+        void init();
         ~TimeHandler();
-        int getTimeForDisplay(); 
-        
+        unsigned int getTimeForDisplay(); 
+        byte getSecond();
         void setAlarm();
         void alarm();
       

@@ -3,7 +3,7 @@
 #include <DS1307RTC.h>
 #include <Time.h>
 
-TimeHandler::TimeHandler(){
+void TimeHandler::init(){
   //Read from the RTC and set the our soft clock based off of it, if not set a default
     tmElements_t tm;
   //The RTC library is fully static. Might want to write a new version? Investigate why.
@@ -24,8 +24,13 @@ TimeHandler::TimeHandler(){
 TimeHandler::~TimeHandler(){
    Serial.println("Deconstructed");
 }
-int TimeHandler::getTimeForDisplay(){
-  return hour()*100 + minute();
+unsigned int TimeHandler::getTimeForDisplay(){
+  //four digit number.
+  return (hour() *100) + minute();
+}
+byte TimeHandler::getSecond(){
+  //four digit number.
+  return second();
 }
 
 void setAlarm(){}

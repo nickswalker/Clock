@@ -3,7 +3,7 @@
 
 #define DHT11PIN 2
 
-SensorHandler::SensorHandler(){
+void SensorHandler::init(){
   
 }
 SensorHandler::~SensorHandler(){

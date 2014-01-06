@@ -11,7 +11,7 @@
 
 class SensorHandler {
 public:
-        SensorHandler();
+        void init();
         ~SensorHandler();
         int readTemperature();
         int readAmbientLightLevel();

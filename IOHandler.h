@@ -1,6 +1,6 @@
 #ifndef IOHandler_H
 #define IOHandler_H
- 
+
 #if defined(ARDUINO) && (ARDUINO >= 100)
 #include <Arduino.h>
 #else
@@ -9,10 +9,9 @@
 
 class IOHandler {
 public:
-        IOHandler();
-        ~IOHandler();
+        void init();
         
-        void displayTime(int time);
+        void displayTime(unsigned int time, byte second);
         
         void alarmBuzz();
         
@@ -23,6 +22,9 @@ public:
         void cycleLight();
         void blinkLight(int red, int green, int blue, int rate);
         void errorBlink();
+        void writeDotsToMatrix(bool colon, bool pmDot);
+private:
+        
         
 };
  

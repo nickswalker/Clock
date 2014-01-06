@@ -11,11 +11,18 @@
 
 class Settings {
 public:
-        Settings();
-        static void setTwelveHourTime(bool);
+        static void setDefaults();
+        
+        static void setBlinkColon(bool);
         static void setRadioAlarm(bool);
+        static void setDisplayTwelveHourTime(bool);
+        static void setProximityTurnOnLight(bool);
+        
+        static bool blinkColon();
         static bool radioAlarm();
-        static bool twelveHourTime();
+        static bool displayTwelveHourTime();
+        static bool proximityTurnOnLight();
+        
         //primary alarm date/time/repeat schedule
         static int alarms[10][7];
 };
