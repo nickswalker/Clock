@@ -19,12 +19,13 @@ public:
         void runWakeSequence(int speed, int temperature);
         
         void setLightColor(int red, int green, int blue, bool animated);
-        void cycleLight();
+        void rainbow(uint8_t wait);
         void blinkLight(int red, int green, int blue, int rate);
         void errorBlink();
-        void writeDotsToMatrix(bool colon, bool pmDot);
-private:
         
+private:
+        void writeDotsToMatrix(bool colon, bool pmDot);
+        uint32_t wheel(byte wheelPos);
         
 };
  

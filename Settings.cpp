@@ -4,8 +4,10 @@
 void Settings::setDefaults(){
   setBlinkColon(true);
   setRadioAlarm(false);
-  setDisplayTwelveHourTime(true);
+  setDisplayTwelveHourTime(false);
   setProximityTurnOnLight(true);
+  setBrightness(7);
+  Serial.println("Settings defaults set.");
 }
 
 void Settings::setBlinkColon(bool value){
@@ -20,6 +22,9 @@ void Settings::setDisplayTwelveHourTime(bool value){
 void Settings::setProximityTurnOnLight(bool value){
   EEPROM.write(4, value);
 }
+void Settings::setBrightness(byte value){
+  EEPROM.write(5, value);
+}
 bool Settings::blinkColon(){
   return (bool)EEPROM.read(1);
 }
@@ -31,5 +36,8 @@ bool Settings::displayTwelveHourTime(){
 }
 bool Settings::proximityTurnOnLight(){
   return (bool)EEPROM.read(4);
+}
+byte Settings::brightness(){
+  return EEPROM.read(5);
 }
  

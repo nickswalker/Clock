@@ -6,6 +6,7 @@
 #include <DS1307RTC.h>
 #include <Adafruit_LEDBackpack.h>
 #include <Adafruit_GFX.h>
+#include <Adafruit_NeoPixel.h>
 #include <Wire.h>
 #include <EEPROM.h>
 //Arduino will only check this file for libraries to include, so we need to pull them all in here
@@ -26,12 +27,15 @@ int led = 13;
 void setup()  {
   pinMode(led, OUTPUT); 
   Serial.begin(9600);
-  Serial.println("SETUP COMPLETE");
+  Serial.println("Serial connection opened");
+  Settings::setDefaults();
   //Illegitimate constructors since we can't declare in a greater scope without instantiating and we MUST have a serial connection before we can start I2C
   io.init();
   time.init();
   sensors.init();
-  Settings::setDefaults();
+  
+  io.rainbow(100);
+  Serial.println("Setup complete");
 } 
 
 void loop()  {

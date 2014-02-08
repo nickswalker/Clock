@@ -4,7 +4,7 @@
 #define DHT11PIN 2
 
 void SensorHandler::init(){
-  
+  Serial.println("SensorHandler setup complete");
 }
 SensorHandler::~SensorHandler(){
   

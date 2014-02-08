@@ -15,7 +15,9 @@ public:
         byte getSecond();
         void setAlarm();
         void alarm();
-      
+private:
+        bool getDate(const char *str);
+        bool getTime(const char *str);
 };
  
 #endif
