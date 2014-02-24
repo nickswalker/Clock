@@ -11,13 +11,15 @@ class TimeHandler {
 public:
         void init();
         ~TimeHandler();
-        unsigned int getTimeForDisplay(); 
+        String getTimeForDisplay(); 
         byte getSecond();
+        byte getMinute();
+        byte getHour();
         void setAlarm();
         void alarm();
 private:
-        bool getDate(const char *str);
-        bool getTime(const char *str);
+        bool getDateFromString(const char *str);
+        bool getTimeFromString(const char *str);
 };
  
 #endif

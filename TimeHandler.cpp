@@ -15,7 +15,7 @@ void TimeHandler::init(){
   }
   else {
     
-    if (TimeHandler::getDate(__DATE__) && TimeHandler::getTime(__TIME__)){
+    if (TimeHandler::getDateFromString(__DATE__) && TimeHandler::getTimeFromString(__TIME__)){
       Serial.println("DS1307 stopped. Starting system time with compile time");
       setTime(tm.Hour, tm.Minute, tm.Second, tm.Day, tm.Month, tm.Year);
       if (RTC.chipPresent()) {
@@ -34,13 +34,18 @@ void TimeHandler::init(){
 TimeHandler::~TimeHandler(){
    Serial.println("Deconstructed");
 }
-unsigned int TimeHandler::getTimeForDisplay(){
-  //four digit number.
-  return (hour() *100) + minute();
-}
+ 
 byte TimeHandler::getSecond(){
   //four digit number.
   return second();
+}
+byte TimeHandler::getMinute(){
+  //four digit number.
+  return minute();
+}
+byte TimeHandler::getHour(){
+  //four digit number.
+  return hour();
 }
 
 void TimeHandler::setAlarm(){}
@@ -53,7 +58,7 @@ const char *monthName[12] = {
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 };
 
-bool TimeHandler::getDate(const char *str){
+bool TimeHandler::getDateFromString(const char *str){
   char Month[12];
   int Day, Year;
   uint8_t monthIndex;
@@ -68,7 +73,7 @@ bool TimeHandler::getDate(const char *str){
   tm.Year = CalendarYrToTm(Year);
   return true;
 }
-bool TimeHandler::getTime(const char *str){
+bool TimeHandler::getTimeFromString(const char *str){
   int Hour, Min, Sec;
 
   if (sscanf(str, "%d:%d:%d", &Hour, &Min, &Sec) != 3) return false;

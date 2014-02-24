@@ -2,6 +2,7 @@
 #include <dht11.h>
 
 #define DHT11PIN 2
+#define photoResistorPin 14
 
 void SensorHandler::init(){
   Serial.println("SensorHandler setup complete");
@@ -10,12 +11,12 @@ SensorHandler::~SensorHandler(){
   
 }
 int SensorHandler::readAmbientLightLevel(){
-  return 0.0;
+  return analogRead(photoResistorPin);
 }
 
 int SensorHandler::readTemperature(){
   tempSensor.read(DHT11PIN);
-return this->fahrenheit((int)tempSensor.temperature);
+  return this->fahrenheit((int)tempSensor.temperature);
 }
 
 int SensorHandler::fahrenheit(int celcius)

@@ -11,12 +11,14 @@ class IOHandler {
 public:
         void init();
         
-        void displayTime(unsigned int time, byte second);
+        void displayTime(byte hour, byte minute, byte second);
         
         void alarmBuzz();
         
         void setExternalLightColor(int red, int green, int blue, bool animated);
         void runWakeSequence(int speed, int temperature);
+        
+        void setBrightness(byte value);
         
         void setLightColor(int red, int green, int blue, bool animated);
         void rainbow(uint8_t wait);

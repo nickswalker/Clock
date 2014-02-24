@@ -2,7 +2,7 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_NeoPixel.h>
 
-#define STRIPPIN 9
+#define STRIPPIN 10
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(2, STRIPPIN, NEO_GRB + NEO_KHZ800);
 
 #include "IOHandler.h"
@@ -12,27 +12,36 @@ Adafruit_7segment matrix = Adafruit_7segment();
 
 void IOHandler::init(){
   //I2C address
-  //matrix.begin(0x70);
-  //strip.show(); // Initialize all pixels to 'off'
-  //strip.begin();
-  //matrix.setBrightness(Settings::brightness());
+  strip.show(); // Initialize all pixels to 'off'
+  strip.begin();
+  matrix.begin(0x70);
+  matrix.setBrightness(Settings::brightness());
   Serial.println("IOHandler setup complete");
 }
 
-void IOHandler::displayTime(unsigned time, byte second){
+void IOHandler::displayTime(byte hour, byte minute, byte second){
+  byte displayHour= hour;
+  byte displayMinute= minute;
+  byte displaySecond= second;
   bool pmDot = false;
   bool colon = false;
   if( Settings::displayTwelveHourTime() ){
-    if(time>1259){
-      time -= 1200;
+    if(hour>=13){
+      hour -= 12;
       pmDot = true;
     }
-  }  
-  matrix.print(time);
-  if( Settings::blinkColon() && second%2 == 0 ) colon = true;
-  this->writeDotsToMatrix(colon, pmDot);
+  }
+  String time = "";
+  if (hour <= 9) time+="0";
+  time += hour;
+  if (hour <= 9) time+="0";
+  time += minute;
+  
+  matrix.print(time.toInt());
+  if( Settings::blinkColon() && second % 2 == 0 ) colon = true;
+  writeDotsToMatrix(colon, pmDot);
   matrix.writeDisplay();
-  Serial.println(time);
+  //Serial.println(time);
 }
 void IOHandler::alarmBuzz(){
   tone(2000, 13);
@@ -44,7 +53,10 @@ void IOHandler::writeDotsToMatrix(bool colon, bool pmDot)  {
   else if (!colon && pmDot) bitmask = 4;
   matrix.writeDigitRaw(2, bitmask);
 }
-
+void IOHandler::setBrightness(byte value){
+   matrix.setBrightness((int)value);
+   Settings::setBrightness(value);
+}
 void IOHandler::rainbow(uint8_t wait) {
   uint16_t i, j;
 

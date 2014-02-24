@@ -22,10 +22,11 @@ TimeHandler time;
 IOHandler io;
 
 //Pin Definitions
-int led = 13;
+#define ledPin 13
+#define photoResistorPin 14
 
 void setup()  {
-  pinMode(led, OUTPUT); 
+  pinMode(ledPin, OUTPUT); 
   Serial.begin(9600);
   Serial.println("Serial connection opened");
   Settings::setDefaults();
@@ -34,13 +35,18 @@ void setup()  {
   time.init();
   sensors.init();
   
-  io.rainbow(100);
   Serial.println("Setup complete");
 } 
 
 void loop()  {
-  io.displayTime(time.getTimeForDisplay(), time.getSecond());
-  delay(100);
+  
+  io.displayTime(time.getHour(), time.getMinute(), time.getSecond());
+  io.setBrightness(map(sensors.readAmbientLightLevel(), 0, 1024, 0, 15 ));
+  if(Settings::debugLogging()){
+     //Serial.println("Temp: " + sensors.readTemperature());
+     Serial.println("Light level: " + sensors.readAmbientLightLevel());
+  }
+  delay(1000);
   
 }
 
