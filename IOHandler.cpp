@@ -32,10 +32,10 @@ void IOHandler::displayTime(byte hour, byte minute, byte second){
     }
   }
   String time = "";
-  if (hour <= 9) time+="0";
-  time += hour;
-  if (hour <= 9) time+="0";
-  time += minute;
+  if (hour <= 9) time = time + String("0");
+  time = time + String(hour);
+  if (hour <= 9) time = time + String("0");
+  time = time + String(minute);
   
   matrix.print(time.toInt());
   if( Settings::blinkColon() && second % 2 == 0 ) colon = true;
