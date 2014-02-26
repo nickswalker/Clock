@@ -32,9 +32,8 @@ void IOHandler::displayTime(byte hour, byte minute, byte second){
     }
   }
   String time = "";
-  if (hour <= 9) time = time + String("0");
   time = time + String(hour);
-  if (hour <= 9) time = time + String("0");
+  if (minute <= 9) time = time + String("0");
   time = time + String(minute);
   
   matrix.print(time.toInt());
