@@ -1,17 +1,17 @@
+#include "IOHandler.h"
+#include "Settings.h"
 #include <Adafruit_LEDBackpack.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_NeoPixel.h>
 
 #define STRIPPIN 10
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(2, STRIPPIN, NEO_GRB + NEO_KHZ800);
 
-#include "IOHandler.h"
-#include "Settings.h"
-
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(3, STRIPPIN, NEO_GRB + NEO_KHZ800);
 Adafruit_7segment matrix = Adafruit_7segment();
 
 void IOHandler::init(){
   //I2C address
+  
   strip.show(); // Initialize all pixels to 'off'
   strip.begin();
   matrix.begin(0x70);
@@ -20,9 +20,6 @@ void IOHandler::init(){
 }
 
 void IOHandler::displayTime(byte hour, byte minute, byte second){
-  byte displayHour= hour;
-  byte displayMinute= minute;
-  byte displaySecond= second;
   bool pmDot = false;
   bool colon = false;
   if( Settings::displayTwelveHourTime() ){
@@ -31,12 +28,13 @@ void IOHandler::displayTime(byte hour, byte minute, byte second){
       pmDot = true;
     }
   }
-  String time = "";
-  time = time + String(hour);
-  if (minute <= 9) time = time + String("0");
-  time = time + String(minute);
+  matrix.clear();
+  matrix.writeDigitNum(1,hour%10);
+  matrix.writeDigitNum(3,0);
+  matrix.writeDigitNum(4,minute%10);
+  if(hour >= 10) matrix.writeDigitNum(0,hour/10);
+  if (minute >= 10) matrix.writeDigitNum(3,minute/10);
   
-  matrix.print(time.toInt());
   if( Settings::blinkColon() && second % 2 == 0 ) colon = true;
   writeDotsToMatrix(colon, pmDot);
   matrix.writeDisplay();
@@ -66,6 +64,12 @@ void IOHandler::rainbow(uint8_t wait) {
     strip.show();
     delay(wait);
   }
+}
+void IOHandler::setLightColor(byte r, byte g, byte b, bool animated){
+  for(int i=0; i<strip.numPixels(); i++) {
+    strip.setPixelColor(i,r,g,b);
+  }
+  strip.show();
 }
 uint32_t IOHandler::wheel(byte wheelPos) {
   if(wheelPos < 85) {

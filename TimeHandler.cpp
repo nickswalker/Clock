@@ -31,20 +31,14 @@ void TimeHandler::init(){
   setSyncProvider(RTC.get);
   Serial.println("TimeHandler setup complete");
 }
-TimeHandler::~TimeHandler(){
-   Serial.println("Deconstructed");
-}
  
 byte TimeHandler::getSecond(){
-  //four digit number.
   return second();
 }
 byte TimeHandler::getMinute(){
-  //four digit number.
   return minute();
 }
 byte TimeHandler::getHour(){
-  //four digit number.
   return hour();
 }
 

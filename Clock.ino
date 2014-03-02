@@ -1,4 +1,4 @@
-//#include <IRremote.h>
+ //#include <IRremote.h>
 //#include <IRremoteInt.h>
 #include <Time.h>
 #include <dht11.h>
@@ -40,13 +40,13 @@ void setup()  {
 
 void loop()  {
   
+  io.setLightColor(1,1,1, false);
   io.displayTime(time.getHour(), time.getMinute(), time.getSecond());
   io.setBrightness(map(sensors.readAmbientLightLevel(), 0, 1024, 0, 15 ));
   if(Settings::debugLogging()){
      //Serial.println("Temp: " + sensors.readTemperature());
-     Serial.println("Light level: " + sensors.readAmbientLightLevel());
+     //Serial.println("Light level: " + sensors.readAmbientLightLevel());
   }
-  delay(1000);
   
 }
 

@@ -20,7 +20,7 @@ public:
         
         void setBrightness(byte value);
         
-        void setLightColor(int red, int green, int blue, bool animated);
+        void setLightColor(byte red, byte green, byte blue, bool animated);
         void rainbow(uint8_t wait);
         void blinkLight(int red, int green, int blue, int rate);
         void errorBlink();

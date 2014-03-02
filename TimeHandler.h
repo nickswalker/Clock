@@ -10,7 +10,6 @@
 class TimeHandler {
 public:
         void init();
-        ~TimeHandler();
         String getTimeForDisplay(); 
         byte getSecond();
         byte getMinute();
