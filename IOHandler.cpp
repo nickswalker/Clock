@@ -5,13 +5,15 @@
 #include <Adafruit_NeoPixel.h>
 
 #define STRIPPIN 10
+#define SNOOZEBUTTONPIN 5
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(3, STRIPPIN, NEO_GRB + NEO_KHZ800);
 Adafruit_7segment matrix = Adafruit_7segment();
 
+bool lastSnoozeButtonState = false;
+
 void IOHandler::init(){
-  //I2C address
-  
+  pinMode(SNOOZEBUTTONPIN, INPUT);
   strip.show(); // Initialize all pixels to 'off'
   strip.begin();
   matrix.begin(0x70);
@@ -41,7 +43,21 @@ void IOHandler::displayTime(byte hour, byte minute, byte second){
   //Serial.println(time);
 }
 void IOHandler::alarmBuzz(){
-  tone(2000, 13);
+  //This is incredibly loud. Use the other line during testing
+  //tone(2, 2000, 1000);
+  
+  tone(2, 100, 1000);
+  
+}
+bool IOHandler::readSnoozeButton(){
+  bool currentReading = digitalRead(SNOOZEBUTTONPIN);
+  if(currentReading == true && lastSnoozeButtonState == false ){
+    lastSnoozeButtonState == true;
+    return true;
+  }
+  lastSnoozeButtonState == false;
+  return false;
+  
 }
 void IOHandler::writeDotsToMatrix(bool colon, bool pmDot)  {
   byte bitmask;

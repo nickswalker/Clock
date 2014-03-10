@@ -15,6 +15,8 @@ public:
         
         void alarmBuzz();
         
+        bool readSnoozeButton();
+         
         void setExternalLightColor(int red, int green, int blue, bool animated);
         void runWakeSequence(int speed, int temperature);
         

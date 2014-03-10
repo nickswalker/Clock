@@ -41,6 +41,11 @@ void setup()  {
 void loop()  {
   
   io.setLightColor(1,1,1, false);
+  if(io.readSnoozeButton()){
+    Serial.print("y");
+    io.alarmBuzz();
+  }
+  
   io.displayTime(time.getHour(), time.getMinute(), time.getSecond());
   io.setBrightness(map(sensors.readAmbientLightLevel(), 0, 1024, 0, 15 ));
   if(Settings::debugLogging()){
