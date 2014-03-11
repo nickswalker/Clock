@@ -7,6 +7,10 @@
 #include <WProgram.h>
 #endif
 
+#include <TimeAlarms.h>
+#include <DS1307RTC.h>
+#include <Time.h>
+
 class TimeHandler {
 public:
         void init();
@@ -16,9 +20,12 @@ public:
         byte getHour();
         void setAlarm();
         void alarm();
-private:
+        void setTimeWithString(String timeInformation);
+        void setDateWithString(String dateInformation);
         bool getDateFromString(const char *str);
         bool getTimeFromString(const char *str);
+private:
+
 };
  
 #endif

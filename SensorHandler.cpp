@@ -7,9 +7,7 @@
 void SensorHandler::init(){
   Serial.println("SensorHandler setup complete");
 }
-SensorHandler::~SensorHandler(){
-  
-}
+
 int SensorHandler::readAmbientLightLevel(){
   return analogRead(photoResistorPin);
 }

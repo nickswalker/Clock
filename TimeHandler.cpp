@@ -17,9 +17,11 @@ void TimeHandler::init(){
     
     if (TimeHandler::getDateFromString(__DATE__) && TimeHandler::getTimeFromString(__TIME__)){
       Serial.println("DS1307 stopped. Starting system time with compile time");
+      //This starts the local time object
       setTime(tm.Hour, tm.Minute, tm.Second, tm.Day, tm.Month, tm.Year);
       if (RTC.chipPresent()) {
         Serial.println("DS1307 was restarted with compile time");
+        //This writes time to the chip
         RTC.write(tm);
       } 
       else {
@@ -45,7 +47,36 @@ byte TimeHandler::getHour(){
 void TimeHandler::setAlarm(){}
 void TimeHandler::alarm(){}
 
-
+void TimeHandler::setDateWithString(String dateInformation){
+  char dateBuf[50];
+  dateInformation.toCharArray(dateBuf, 50);
+   if (this->getDateFromString(dateBuf)){
+      setTime(tm.Hour, tm.Minute, tm.Second, tm.Day, tm.Month, tm.Year);
+      if (RTC.chipPresent()) {
+        Serial.println("DS1307 was restarted with compile time");
+        //This writes time to the chip
+        RTC.write(tm);
+      } 
+      else {
+        Serial.println("DS1307 fatal communication error");
+      }
+   }
+}
+void TimeHandler::setTimeWithString(String timeInformation){
+ char timeBuf[50];
+  timeInformation.toCharArray(timeBuf, 50); 
+   if (this->getTimeFromString(timeBuf)){
+      setTime(tm.Hour, tm.Minute, tm.Second, tm.Day, tm.Month, tm.Year);
+      if (RTC.chipPresent()) {
+        Serial.println("DS1307 was restarted with compile time");
+        //This writes time to the chip
+        RTC.write(tm);
+      } 
+      else {
+        Serial.println("DS1307 fatal communication error");
+      }
+   }
+}
 //Helpers to set compile time defaults
 const char *monthName[12] = {
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",

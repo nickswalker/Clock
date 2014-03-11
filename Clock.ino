@@ -20,6 +20,7 @@
 SensorHandler sensors;
 TimeHandler time;
 IOHandler io;
+String bleIn = "";
 
 //Pin Definitions
 #define ledPin 13
@@ -41,6 +42,20 @@ void setup()  {
 void loop()  {
   
   io.setLightColor(1,1,1, false);
+  
+   while (Serial.available() > 0)  {
+    bleIn += char(Serial.read());
+    delay(2);
+  }
+ 
+  if(bleIn.length() > 0) {
+    if(bleIn.equals("AT")) Serial.println("OK");
+    else if(bleIn.equals("AT")) Serial.println("OK");
+    else if(bleIn.startsWith("AT+DA:")) time.setDateWithString(bleIn.substring(6,17));
+    else if(bleIn.startsWith("AT+TI:")) time.setTimeWithString(bleIn.substring(6,14));
+    else if(bleIn.startsWith("AT+HEY")) Serial.println("Hi, Erin!");
+      bleIn = "";
+  }
   if(io.readSnoozeButton()){
     Serial.print("y");
     io.alarmBuzz();
