@@ -68,7 +68,7 @@ void TimeHandler::setTimeWithString(String timeInformation){
    if (this->getTimeFromString(timeBuf)){
       setTime(tm.Hour, tm.Minute, tm.Second, tm.Day, tm.Month, tm.Year);
       if (RTC.chipPresent()) {
-        Serial.println("DS1307 was restarted with compile time");
+        Serial.println("DS1307 was set with string.");
         //This writes time to the chip
         RTC.write(tm);
       } 

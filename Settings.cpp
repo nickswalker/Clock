@@ -2,49 +2,25 @@
 #include <EEPROM.h>
 
 void Settings::setDefaults(){
-  setBlinkColon(true);
-  setRadioAlarm(false);
-  setDisplayTwelveHourTime(false);
-  setProximityTurnOnLight(true);
-  setBrightness(7);
-  setDebugLogging(true);
+  set(debugMode, (bool)true);
+  set(displayTwelveHourTime, (bool)false);
+  set(blinkColon, (bool)true);
   Serial.println("Settings defaults set.");
 }
 
-void Settings::setBlinkColon(bool value){
-  EEPROM.write(1, value);
+void Settings::set(Option option, bool value){
+  EEPROM.write(option, value);
 }
-void Settings::setRadioAlarm(bool value){
-  EEPROM.write(2, value);
+void Settings::set(Option option, byte value){
+  EEPROM.write(option, value);
 }
-void Settings::setDisplayTwelveHourTime(bool value){
-  EEPROM.write(3, value);
+
+
+bool Settings::getBool(Option option){
+  return (bool)EEPROM.read(option);
 }
-void Settings::setProximityTurnOnLight(bool value){
-  EEPROM.write(4, value);
-}
-void Settings::setBrightness(byte value){
-  EEPROM.write(5, value);
-}
-void Settings::setDebugLogging(bool value){
-  EEPROM.write(6, value);
-}
-bool Settings::blinkColon(){
-  return (bool)EEPROM.read(1);
-}
-bool Settings::radioAlarm(){
-  return (bool)EEPROM.read(2);
-}
-bool Settings::displayTwelveHourTime(){
-  return (bool)EEPROM.read(3);
-}
-bool Settings::proximityTurnOnLight(){
-  return (bool)EEPROM.read(4);
-}
-byte Settings::brightness(){
-  return EEPROM.read(5);
-}
-bool Settings::debugLogging(){
-  return (bool)EEPROM.read(6);
+
+byte Settings::getByte(Option option){
+  return EEPROM.read(option);
 }
  

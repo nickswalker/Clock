@@ -17,14 +17,14 @@ void IOHandler::init(){
   strip.show(); // Initialize all pixels to 'off'
   strip.begin();
   matrix.begin(0x70);
-  matrix.setBrightness(Settings::brightness());
+  matrix.setBrightness(Settings::getByte(brightness));
   Serial.println("IOHandler setup complete");
 }
 
 void IOHandler::displayTime(byte hour, byte minute, byte second){
   bool pmDot = false;
-  bool colon = false;
-  if( Settings::displayTwelveHourTime() ){
+  bool colon = true;
+  if( Settings::getBool(displayTwelveHourTime) ){
     if(hour>=13){
       hour -= 12;
       pmDot = true;
@@ -37,7 +37,7 @@ void IOHandler::displayTime(byte hour, byte minute, byte second){
   if(hour >= 10) matrix.writeDigitNum(0,hour/10);
   if (minute >= 10) matrix.writeDigitNum(3,minute/10);
   
-  if( Settings::blinkColon() && second % 2 == 0 ) colon = true;
+  if( Settings::getBool(blinkColon) && second % 2 == 1 ) colon = false;
   writeDotsToMatrix(colon, pmDot);
   matrix.writeDisplay();
   //Serial.println(time);
@@ -68,7 +68,7 @@ void IOHandler::writeDotsToMatrix(bool colon, bool pmDot)  {
 }
 void IOHandler::setBrightness(byte value){
    matrix.setBrightness((int)value);
-   Settings::setBrightness(value);
+   Settings::set(brightness, (byte)value);
 }
 void IOHandler::rainbow(uint8_t wait) {
   uint16_t i, j;
