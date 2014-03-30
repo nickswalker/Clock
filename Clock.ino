@@ -16,14 +16,14 @@
 #include "TimeHandler.h"
 #include "Settings.h"
 
-//Empty constructors
+//Empty constructors get executed
 SensorHandler sensors;
 TimeHandler time;
 IOHandler io;
 String bleIn = "";
 
 //Pin Definitions
-#define PIRSENSORPIN 4
+
 #define LEDPIN 13
 #define PHOTORESISTORPIN 14
 #define IRLEDPIN 14
@@ -31,7 +31,6 @@ String bleIn = "";
 void setup()  {
   pinMode(LEDPIN, OUTPUT); 
   Serial.begin(9600);
-  Serial.println("Serial connection opened");
   //Settings::setDefaults();
   //Illegitimate constructors since we can't declare in a greater scope without instantiating and we MUST have a serial connection before we can start I2C
   io.init();
@@ -45,31 +44,41 @@ void loop()  {
   
   io.setLightColor(1,1,1, false);
   
+  //You only get 18 chars
    while (Serial.available() > 0)  {
-    bleIn += char(Serial.read());
-    delay(2);
+     
+     Serial.setTimeout(100); // 100 millisecond timeout
+     bleIn = Serial.readString();
+    
   }
  
   if(bleIn.length() > 0) {
-    if(bleIn.equals("AT")) Serial.println("OK");
+    if(bleIn.startsWith("AT")) Serial.println("OK");
     else if(bleIn.startsWith("DA:")) time.setDateWithString(bleIn.substring(3,14));
     else if(bleIn.startsWith("TI:")) time.setTimeWithString(bleIn.substring(3,11));
+    // First  digits = option integer
+    // Second digit = bool value
+    // If string is only two digits, query and return the value of the setting
     else if(bleIn.startsWith("S:")){
-      bool value = (bool)bleIn.substring(4,5).compareTo("0");
-      int option = 0;
+      int option;
       char buffer [2];
-      bleIn.substring(2,4).toCharArray(buffer, 2);
-      option = atoi (buffer);
-      Settings::set((Option)option, value);
+      bleIn.substring(2,3).toCharArray(buffer, 2);
+      option =  atoi(buffer);
+      if (bleIn.length() > 3){ 
+        bool value = bleIn.substring(3,4).equals("1");
+        Settings::set((Option)option, value);
+      }
+      else Serial.println (Settings::getBool((Option)option) );
     }
     //Serial.println(bleIn);
       bleIn = "";
   }
   if(io.readSnoozeButton()){
-    Serial.print("y");
+    Serial.println("Button");
     io.alarmBuzz();
   }
-  
+  if(sensors.personIsPresent()) digitalWrite(LEDPIN, HIGH);
+  else digitalWrite(LEDPIN, LOW);
   io.displayTime(time.getHour(), time.getMinute(), time.getSecond());
   io.setBrightness(map(sensors.readAmbientLightLevel(), 0, 1024, 0, 15 ));
   if( Settings::getBool(debugMode) && sensorUpdateInterval == 0 ){

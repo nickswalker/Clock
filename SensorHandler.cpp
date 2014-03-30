@@ -1,6 +1,7 @@
 #include "SensorHandler.h"
 #include <dht11.h>
 
+#define PIRSENSORPIN 4
 #define DHT11PIN 2
 #define PHOTORESISTORPIN 14
 
@@ -11,6 +12,11 @@ void SensorHandler::init(){
 int SensorHandler::readAmbientLightLevel(){
   return analogRead(PHOTORESISTORPIN);
 }
+
+bool SensorHandler::personIsPresent(){
+  return digitalRead(PIRSENSORPIN); 
+}
+
 
 int SensorHandler::readTemperature(){
   tempSensor.read(DHT11PIN);

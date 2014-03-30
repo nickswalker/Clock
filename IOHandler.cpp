@@ -7,7 +7,7 @@
 #define STRIPPIN 10
 #define SNOOZEBUTTONPIN 5
 
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(3, STRIPPIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(7, STRIPPIN, NEO_GRB + NEO_KHZ800);
 Adafruit_7segment matrix = Adafruit_7segment();
 
 bool lastSnoozeButtonState = false;
@@ -47,15 +47,20 @@ void IOHandler::alarmBuzz(){
   //tone(2, 2000, 1000);
   
   tone(2, 100, 1000);
-  
 }
+int lastReadingTime = 0;
 bool IOHandler::readSnoozeButton(){
+  
   bool currentReading = digitalRead(SNOOZEBUTTONPIN);
-  if(currentReading == true && lastSnoozeButtonState == false ){
-    lastSnoozeButtonState == true;
+  if(currentReading == true){
+    
+    if( (millis() - lastReadingTime) > 1000 ){
+    Serial.println((millis() - lastReadingTime));
+    lastReadingTime = millis();
     return true;
+    }
   }
-  lastSnoozeButtonState == false;
+  
   return false;
   
 }
@@ -87,14 +92,4 @@ void IOHandler::setLightColor(byte r, byte g, byte b, bool animated){
   }
   strip.show();
 }
-uint32_t IOHandler::wheel(byte wheelPos) {
-  if(wheelPos < 85) {
-   return strip.Color(wheelPos * 3, 255 - wheelPos * 3, 0);
-  } else if(wheelPos < 170) {
-   wheelPos -= 85;
-   return strip.Color(255 - wheelPos * 3, 0, wheelPos * 3);
-  } else {
-   wheelPos -= 170;
-   return strip.Color(0, wheelPos * 3, 255 - wheelPos * 3);
-  }
-}
+

@@ -7,8 +7,6 @@
 #include <WProgram.h>
 #endif
 
-#define photoResistorPin 14
-
 #include <dht11.h>
 
 class SensorHandler {
@@ -16,6 +14,7 @@ public:
         void init();
         int readTemperature();
         int readAmbientLightLevel();
+        bool personIsPresent();
 private:
   int fahrenheit(int celcius);
   dht11 tempSensor;
