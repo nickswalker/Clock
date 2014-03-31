@@ -56,17 +56,23 @@ void loop()  {
     if(bleIn.startsWith("AT")) Serial.println("OK");
     else if(bleIn.startsWith("DA:")) time.setDateWithString(bleIn.substring(3,14));
     else if(bleIn.startsWith("TI:")) time.setTimeWithString(bleIn.substring(3,11));
+    else if(bleIn.startsWith("L:")) {
+      int r = IOHandler::intFromHexString(bleIn.substring(2,4));
+      int g = IOHandler::intFromHexString(bleIn.substring(4,6));
+      int b = IOHandler::intFromHexString(bleIn.substring(6,8));
+      io.setLightColor(r,0,0,0);
+    }
     // First  digits = option integer
     // Second digit = bool value
     // If string is only two digits, query and return the value of the setting
     else if(bleIn.startsWith("S:")){
-      int option;
-      char buffer [2];
-      bleIn.substring(2,3).toCharArray(buffer, 2);
-      option =  atoi(buffer);
+      
+      Option option = Settings::optionFromString( bleIn.substring(2,3) );
+     
+   
       if (bleIn.length() > 3){ 
         bool value = bleIn.substring(3,4).equals("1");
-        Settings::set((Option)option, value);
+        Settings::set(option, value);
       }
       else Serial.println (Settings::getBool((Option)option) );
     }

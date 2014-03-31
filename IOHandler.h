@@ -12,7 +12,6 @@ public:
         void init();
         
         void displayTime(byte hour, byte minute, byte second);
-        
         void alarmBuzz();
         
         bool readSnoozeButton();
@@ -23,13 +22,13 @@ public:
         void setBrightness(byte value);
         
         void setLightColor(byte red, byte green, byte blue, bool animated);
-        void rainbow(uint8_t wait);
         void blinkLight(int red, int green, int blue, int rate);
         void errorBlink();
+         static int intFromHexString(String string); 
         
 private:
         void writeDotsToMatrix(bool colon, bool pmDot);
-        uint32_t wheel(byte wheelPos);
+       
         
 };
  

@@ -24,3 +24,10 @@ byte Settings::getByte(Option option){
   return EEPROM.read(option);
 }
  
+Option Settings::optionFromString(String string){
+  Option option;
+  char charBuf[50];
+  string.toCharArray(charBuf, 50);    
+  sscanf(charBuf, "%d", &option);
+  return option;
+}

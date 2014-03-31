@@ -26,6 +26,7 @@ public:
         static bool getBool(Option option);
         static byte getByte(Option option);
         
+        static Option optionFromString(String string);
 
 };
  

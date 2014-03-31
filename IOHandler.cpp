@@ -4,7 +4,7 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_NeoPixel.h>
 
-#define STRIPPIN 10
+#define STRIPPIN 9
 #define SNOOZEBUTTONPIN 5
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(7, STRIPPIN, NEO_GRB + NEO_KHZ800);
@@ -75,21 +75,18 @@ void IOHandler::setBrightness(byte value){
    matrix.setBrightness((int)value);
    Settings::set(brightness, (byte)value);
 }
-void IOHandler::rainbow(uint8_t wait) {
-  uint16_t i, j;
-
-  for(j=0; j<256; j++) {
-    for(i=0; i<strip.numPixels(); i++) {
-      strip.setPixelColor(i, wheel((i+j) & 255));
-    }
-    strip.show();
-    delay(wait);
-  }
-}
 void IOHandler::setLightColor(byte r, byte g, byte b, bool animated){
   for(int i=0; i<strip.numPixels(); i++) {
     strip.setPixelColor(i,r,g,b);
   }
   strip.show();
+}
+
+int IOHandler::intFromHexString(String hexString){
+  int returnInt;
+  char charBuf[50];
+  hexString.toCharArray(charBuf, 50);    
+  sscanf(charBuf, "%2x ", &returnInt);
+  return returnInt;
 }
 
