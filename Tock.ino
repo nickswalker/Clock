@@ -40,9 +40,7 @@ void setup()  {
   Serial.println("Setup complete");
 } 
 byte sensorUpdateInterval = 0;
-void loop()  {
-  
-  io.setLightColor(1,1,1, false);
+void loop()  { 
   
   //You only get 18 chars
    while (Serial.available() > 0)  {
@@ -60,11 +58,11 @@ void loop()  {
       int r = IOHandler::intFromHexString(bleIn.substring(2,4));
       int g = IOHandler::intFromHexString(bleIn.substring(4,6));
       int b = IOHandler::intFromHexString(bleIn.substring(6,8));
-      io.setLightColor(r,0,0,0);
+      io.setLightColor(r,g,b,0);
     }
     // First  digits = option integer
     // Second digit = bool value
-    // If string is only two digits, query and return the value of the setting
+    // If string is only one digit, query and return the value of the setting
     else if(bleIn.startsWith("S:")){
       
       Option option = Settings::optionFromString( bleIn.substring(2,3) );
@@ -85,6 +83,7 @@ void loop()  {
   }
   if(sensors.personIsPresent()) digitalWrite(LEDPIN, HIGH);
   else digitalWrite(LEDPIN, LOW);
+  
   io.displayTime(time.getHour(), time.getMinute(), time.getSecond());
   io.setBrightness(map(sensors.readAmbientLightLevel(), 0, 1024, 0, 15 ));
   if( Settings::getBool(debugMode) && sensorUpdateInterval == 0 ){
