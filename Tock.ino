@@ -20,13 +20,21 @@
 SensorHandler sensors;
 TimeHandler time;
 IOHandler io;
-String bleIn = "";
 
 //Pin Definitions
 
 #define LEDPIN 13
 #define PHOTORESISTORPIN 14
 #define IRLEDPIN 14
+
+//Special definitions
+#define MESSAGE_SIZE 18 //Message is capped at 18 bytes due to the BLE profile. If we try to get any more we simply get the same values on loop
+
+//Global vars
+unsigned long startTime;
+byte sensorUpdateInterval = 0;
+byte message[MESSAGE_SIZE];
+
 
 void setup()  {
   pinMode(LEDPIN, OUTPUT); 
@@ -36,47 +44,11 @@ void setup()  {
   io.init();
   time.init();
   sensors.init();
-  
   Serial.println("Setup complete");
 } 
-byte sensorUpdateInterval = 0;
+
 void loop()  { 
-  
-  //You only get 18 chars
-   while (Serial.available() > 0)  {
-     
-     Serial.setTimeout(100); // 100 millisecond timeout
-     bleIn = Serial.readString();
-    
-  }
- 
-  if(bleIn.length() > 0) {
-    if(bleIn.startsWith("AT")) Serial.println("OK");
-    else if(bleIn.startsWith("DA:")) time.setDateWithString(bleIn.substring(3,14));
-    else if(bleIn.startsWith("TI:")) time.setTimeWithString(bleIn.substring(3,11));
-    else if(bleIn.startsWith("L:")) {
-      int r = IOHandler::intFromHexString(bleIn.substring(2,4));
-      int g = IOHandler::intFromHexString(bleIn.substring(4,6));
-      int b = IOHandler::intFromHexString(bleIn.substring(6,8));
-      io.setLightColor(r,g,b,0);
-    }
-    // First  digits = option integer
-    // Second digit = bool value
-    // If string is only one digit, query and return the value of the setting
-    else if(bleIn.startsWith("S:")){
-      
-      Option option = Settings::optionFromString( bleIn.substring(2,3) );
-     
-   
-      if (bleIn.length() > 3){ 
-        bool value = bleIn.substring(3,4).equals("1");
-        Settings::set(option, value);
-      }
-      else Serial.println (Settings::getBool((Option)option) );
-    }
-    //Serial.println(bleIn);
-      bleIn = "";
-  }
+  checkForCommands();
   if(io.readSnoozeButton()){
     Serial.println("Button");
     io.alarmBuzz();
@@ -95,4 +67,44 @@ void loop()  {
   
 }
 
+typedef enum Command{
+  SETDATE = 1,
+	SETTIME = 2,
+	SETLIGHTCOLOR = 3,
+	SETALARM = 4,
+	SETSETTING = 5,
+	GETSETTING = 6
+};
 
+void checkForCommands(){
+  while (Serial.available() > 0)  {
+    Serial.setTimeout(100);
+    Serial.readBytes((char *)message,sizeof(message));
+  }
+   //First bit is the command bit. We can assume that the buffer is niled out if this bit is 0
+  if(message[0] > 0) {
+    switch((Command)message[0]){
+     case SETLIGHTCOLOR:{
+       int r = message[1];
+       int g = message[2];
+       int b = message[3];
+       io.setLightColor(r,g,b,0);
+       break;
+     }
+      case SETSETTING:{
+        Option option = (Option)message[1];
+        bool value = message[2];
+        Settings::set(option, value);
+        break;
+      }
+      case GETSETTING:
+      {
+        Option option = (Option)message[1];
+        Serial.println (Settings::getBool((Option)option) );
+        break;
+      }
+    }
+    for(int i=0; i< sizeof(message); i++) Serial.println(message[i]);
+    memset(message, 0, sizeof(message)); //set all indexes to 0
+  }
+}

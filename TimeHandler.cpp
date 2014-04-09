@@ -44,8 +44,6 @@ byte TimeHandler::getHour(){
   return hour();
 }
 
-void TimeHandler::setAlarm(){}
-void TimeHandler::alarm(){}
 
 void TimeHandler::setDateWithString(String dateInformation){
   char dateBuf[50];

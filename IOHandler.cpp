@@ -6,6 +6,7 @@
 
 #define STRIPPIN 9
 #define SNOOZEBUTTONPIN 5
+#define SPEAKERPIN 2
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(7, STRIPPIN, NEO_GRB + NEO_KHZ800);
 Adafruit_7segment matrix = Adafruit_7segment();
@@ -46,7 +47,8 @@ void IOHandler::alarmBuzz(){
   //This is incredibly loud. Use the other line during testing
   //tone(2, 2000, 1000);
   
-  tone(2, 100, 1000);
+  tone(SPEAKERPIN, 100, 1000);
+   
 }
 int lastReadingTime = 0;
 bool IOHandler::readSnoozeButton(){
@@ -80,13 +82,5 @@ void IOHandler::setLightColor(byte r, byte g, byte b, bool animated){
     strip.setPixelColor(i,r,g,b);
   }
   strip.show();
-}
-
-int IOHandler::intFromHexString(String hexString){
-  int returnInt;
-  char charBuf[50];
-  hexString.toCharArray(charBuf, 50);    
-  sscanf(charBuf, "%2x ", &returnInt);
-  return returnInt;
 }
 
