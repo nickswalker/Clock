@@ -15,7 +15,7 @@
 #include "IOHandler.h"
 #include "TimeHandler.h"
 #include "Settings.h"
-#include "pin_definitions.h"
+#include "definitions.h"
 
 //(Empty) constructors get executed immediately
 SensorHandler sensors;
@@ -46,7 +46,10 @@ void loop()  {
   checkForCommands();
   
   io.displayTime(time.getHour(), time.getMinute(), time.getSecond());
-  io.setBrightness(map(sensors.readAmbientLightLevel(), 0, 1024, 0, 15 ));
+  
+  if(Settings::getBool(AUTOBRIGHTNESS)){
+    io.setBrightness(map(sensors.readAmbientLightLevel(), 0, 1024, 0, 15 ));
+  }
   
 }
 void checkForAlarms(){
@@ -56,19 +59,7 @@ void checkForAlarms(){
   }
   if(io.checkIfSnoozeButtonWasPressed()) io.setAlarmState(false);
     
-    
 }
-typedef enum Command{
-  SETDATE = 1,
-  SETTIME = 2,
-  SETLIGHTCOLOR = 3,
-  GETLIGHTCOLOR = 4,
-  SETALARM = 5,
-  GETALARM = 6,
-  SETSETTING = 7,
-  GETSETTING = 8,
-  TESTCONNECTION =255      
-};
 
 void checkForCommands(){
   while (Serial.available() > 0)  {
@@ -87,14 +78,15 @@ void checkForCommands(){
      }
       case SETSETTING:{
         Option option = (Option)message[1];
-        bool value = message[2];
+        byte value = message[2];
         Settings::set(option, value);
+        if(option == BRIGHTNESS) io.setBrightness(value);
         break;
       }
       case GETSETTING:
       {
         Option option = (Option)message[1];
-        Serial.println (Settings::getBool((Option)option) );
+        Serial.println (Settings::getBool(option) );
         break;
       }
       case SETTIME:

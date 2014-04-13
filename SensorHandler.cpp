@@ -1,5 +1,5 @@
 #include "SensorHandler.h"
-#include "pin_definitions.h"
+#include "definitions.h"
 #include <dht11.h>
 
 void SensorHandler::init(){

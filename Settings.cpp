@@ -2,17 +2,14 @@
 #include <EEPROM.h>
 
 void Settings::setDefaults(){
-  set(debugMode, (bool)true);
-  set(displayTwelveHourTime, (bool)true);
-  set(blinkColon, (bool)true);
+  set(DEBUGMODE, (bool)true);
+  set(DISPLAYTWENTYFOURHOURTIME, (bool)true);
+  set(BLINKCOLON, (bool)true);
   Serial.println("Settings defaults set.");
 }
 
 /* = Setters
 --------------------------------------------------------------*/
-void Settings::set(Option option, bool value){
-  EEPROM.write(option, value);
-}
 void Settings::set(Option option, byte value){
   EEPROM.write(option, value);
 }

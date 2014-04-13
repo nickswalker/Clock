@@ -1,6 +1,6 @@
 #include "IOHandler.h"
 #include "Settings.h"
-#include "pin_definitions.h"
+#include "definitions.h"
 #include <Adafruit_LEDBackpack.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_NeoPixel.h>
@@ -13,7 +13,7 @@ void IOHandler::init(){
   strip.show(); // Initialize all pixels to 'off'
   strip.begin();
   matrix.begin(0x70);
-  matrix.setBrightness(Settings::getByte(brightness));
+  matrix.setBrightness(Settings::getByte(BRIGHTNESS));
   Serial.println("IOHandler setup complete");
 }
 
@@ -21,37 +21,32 @@ void IOHandler::init(){
 --------------------------------------------------------------*/
 
 typedef enum DisplayDotsProperties{
-  COLON = 1,
-  UPPERLEFTDOT = 2,
-  LOWERLEFTDOT = 3,
-  UPPERRIGHTDOT = 4
+  COLON = 1 << 1,
+  UPPERLEFTDOT = 1 << 2,
+  LOWERLEFTDOT = 1 << 3,
+  UPPERRIGHTDOT = 1 << 4
         
 };
 
 void IOHandler::displayTime(byte hour, byte minute, byte second){
-  bool pmDot = false;
-  bool colon = true;
- 
-  if( Settings::getBool(displayTwelveHourTime) ){
+  matrix.clear();
+  byte dotsBitmask = 0;
+  dotsBitmask |= COLON;
+  if( Settings::getBool(BLINKCOLON) && (second % 2 == 1) ) dotsBitmask ^= COLON; 
+  if( !Settings::getBool(DISPLAYTWENTYFOURHOURTIME) ){
     if(hour>=13){
       hour -= 12;
-      pmDot = true;
+      dotsBitmask |= UPPERLEFTDOT;
     }
   }
-  if( Settings::getBool(blinkColon) && second % 2 ) colon = true;
   
-  matrix.clear();
   matrix.writeDigitNum(1,hour%10);
   matrix.writeDigitNum(3,0);
   matrix.writeDigitNum(4,minute%10);
   if(hour >= 10) matrix.writeDigitNum(0,hour/10);
   if (minute >= 10) matrix.writeDigitNum(3,minute/10);
   
-  byte dotsBitmask = 0;
-  dotsBitmask |= colon << COLON;
-  dotsBitmask |= pmDot << UPPERLEFTDOT;
   matrix.writeDigitRaw(2, dotsBitmask);
-  
   matrix.writeDisplay();
 
 }
@@ -106,7 +101,7 @@ boolean IOHandler::getAlarmState(){
   return this->alarmIsOn;
 }
 void IOHandler::alarmBuzz(){
-  if(Settings::getBool(louderAlarm)) tone(SPEAKERPIN, 2000, 1000);
+  if(Settings::getBool(LOUDERALARM)) tone(SPEAKERPIN, 2000, 1000);
   else tone(SPEAKERPIN, 100);
    
 }
