@@ -1,9 +1,6 @@
 #include "SensorHandler.h"
+#include "pin_definitions.h"
 #include <dht11.h>
-
-#define PIRSENSORPIN 4
-#define DHT11PIN 2
-#define PHOTORESISTORPIN 14
 
 void SensorHandler::init(){
   Serial.println("SensorHandler setup complete");
@@ -13,10 +10,12 @@ int SensorHandler::readAmbientLightLevel(){
   return analogRead(PHOTORESISTORPIN);
 }
 
-bool SensorHandler::personIsPresent(){
+boolean SensorHandler::personIsPresent(){
   return digitalRead(PIRSENSORPIN); 
 }
 
+/* = Temperature
+--------------------------------------------------------------*/
 
 int SensorHandler::readTemperature(){
   tempSensor.read(DHT11PIN);

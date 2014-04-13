@@ -15,24 +15,18 @@
 #include "IOHandler.h"
 #include "TimeHandler.h"
 #include "Settings.h"
+#include "pin_definitions.h"
 
-//Empty constructors get executed
+//(Empty) constructors get executed immediately
 SensorHandler sensors;
 TimeHandler time;
 IOHandler io;
-
-//Pin Definitions
-
-#define LEDPIN 13
-#define PHOTORESISTORPIN 14
-#define IRLEDPIN 14
 
 //Special definitions
 #define MESSAGE_SIZE 18 //Message is capped at 18 bytes due to the BLE profile. If we try to get any more we simply get the same values on loop
 
 //Global vars
 unsigned long startTime;
-byte sensorUpdateInterval = 0;
 byte message[MESSAGE_SIZE];
 
 
@@ -48,32 +42,32 @@ void setup()  {
 } 
 
 void loop()  { 
+  checkForAlarms();
   checkForCommands();
-  if(io.readSnoozeButton()){
-    Serial.println("Button");
-    io.alarmBuzz();
-  }
-  if(sensors.personIsPresent()) digitalWrite(LEDPIN, HIGH);
-  else digitalWrite(LEDPIN, LOW);
   
   io.displayTime(time.getHour(), time.getMinute(), time.getSecond());
   io.setBrightness(map(sensors.readAmbientLightLevel(), 0, 1024, 0, 15 ));
-  if( Settings::getBool(debugMode) && sensorUpdateInterval == 0 ){
-     //Serial.println("Temp: " + sensors.readTemperature());
-     //Serial.println("LL: " + sensors.readAmbientLightLevel());
-  }
-  
-  sensorUpdateInterval++;
   
 }
-
+void checkForAlarms(){
+  if(!io.getAlarmState()){
+    if( time.getSecond() == 0 && time.getMinute() == 30 && time.getHour() == 6 ) io.setAlarmState(true); 
+    //if(time.getSecond() == 0) io.setAlarmState(true);
+  }
+  if(io.checkIfSnoozeButtonWasPressed()) io.setAlarmState(false);
+    
+    
+}
 typedef enum Command{
   SETDATE = 1,
-	SETTIME = 2,
-	SETLIGHTCOLOR = 3,
-	SETALARM = 4,
-	SETSETTING = 5,
-	GETSETTING = 6
+  SETTIME = 2,
+  SETLIGHTCOLOR = 3,
+  GETLIGHTCOLOR = 4,
+  SETALARM = 5,
+  GETALARM = 6,
+  SETSETTING = 7,
+  GETSETTING = 8,
+  TESTCONNECTION =255      
 };
 
 void checkForCommands(){
@@ -103,8 +97,26 @@ void checkForCommands(){
         Serial.println (Settings::getBool((Option)option) );
         break;
       }
+      case SETTIME:
+      {
+        time_t time = (uint32_t)message[1] + ((uint32_t)message[2] << 8) + ((uint32_t)message[3] << 16) + ((uint32_t)message[4] << 24); 
+        RTC.set(time);
+        setTime(time);
+        Serial.println(time);
+        break;
+      }
+      case TESTCONNECTION:
+      {
+        Serial.println("OK");
+        break;
+      }
     }
-    for(int i=0; i< sizeof(message); i++) Serial.println(message[i]);
+    for(int i=0; i< sizeof(message); i++){
+      Serial.print(i);Serial.print(": ");
+      Serial.print(message[i]);
+      Serial.println();
+    }
+    Serial.println();
     memset(message, 0, sizeof(message)); //set all indexes to 0
   }
 }

@@ -1,5 +1,3 @@
-//Shuttles to EPROM
-
 #ifndef Settings_H
 #define Settings_H
  
@@ -12,21 +10,20 @@
 typedef enum Option{
   blinkColon,
   displayTwelveHourTime,
+  louderAlarm,
+  autoBrightness,
   brightness,
-  alarmVolume,
   debugMode
 };
 
 class Settings {
 public:
-        static void setDefaults();
-        static void set(Option option, bool value);
-        static void set(Option option, byte value);
+  static void setDefaults();
+  static void set(Option option, bool value);
+  static void set(Option option, byte value);
         
-        static bool getBool(Option option);
-        static byte getByte(Option option);
-        
-        static Option optionFromString(String string);
+  static bool getBool(Option option);
+  static byte getByte(Option option);        
 
 };
  

@@ -13,18 +13,18 @@
 
 class TimeHandler {
 public:
-        void init();
-        String getTimeForDisplay(); 
-        byte getSecond();
-        byte getMinute();
-        byte getHour();
-        void setAlarm();
-        void alarm();
-        void setTimeWithString(String timeInformation);
-        void setDateWithString(String dateInformation);
-        bool getDateFromString(const char *str);
-        bool getTimeFromString(const char *str);
+  void init();
+ 
+  byte getSecond();
+  byte getMinute();
+  byte getHour();
+  
+  void setAlarm();
+  void alarm();
+  
 private:
+  boolean parseDateFromString(const char *str, tmElements_t tm);
+  boolean parseTimeFromString(const char *str, tmElements_t tm);
 
 };
  

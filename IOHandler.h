@@ -9,26 +9,21 @@
 
 class IOHandler {
 public:
-        void init();
+  void init();
         
-        void displayTime(byte hour, byte minute, byte second);
-        void alarmBuzz();
+  void displayTime(byte hour, byte minute, byte second);
+  void setBrightness(byte value);
         
-        bool readSnoozeButton();
-         
-        void setExternalLightColor(int red, int green, int blue, bool animated);
-        void runWakeSequence(int speed, int temperature);
+  boolean checkIfSnoozeButtonWasPressed();
+  void setAlarmState(boolean state);
+  boolean getAlarmState();
         
-        void setBrightness(byte value);
-        
-        void setLightColor(byte red, byte green, byte blue, bool animated);
-        void blinkLight(int red, int green, int blue, int rate);
-        void errorBlink();
-         static int intFromHexString(String string); 
+  void runWakeSequence(int speed, int temperature);
+  void setLightColor(byte red, byte green, byte blue, bool animated);
         
 private:
-        void writeDotsToMatrix(bool colon, bool pmDot);
-       
+  void alarmBuzz();
+  boolean alarmIsOn;
         
 };
  

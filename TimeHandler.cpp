@@ -6,18 +6,17 @@
 tmElements_t tm;
 
 void TimeHandler::init(){
-  //Read from the RTC and set the our soft clock based off of it, if not set a default
-  //The RTC library is fully static. Might want to write a new version? Investigate why.
+  //Read from the RTC and set the our soft clock based off of it
+  
   if (RTC.read(tm)) {
-    //These members are capitalized too... Another reason to consider revising.
     setTime(tm.Hour, tm.Minute, tm.Second, tm.Day, tm.Month, tm.Year);
     Serial.println("DN1307 read and system time set");
   }
+  //Time couldn't be read
   else {
-    
-    if (TimeHandler::getDateFromString(__DATE__) && TimeHandler::getTimeFromString(__TIME__)){
+    //Try parsing time from compile-time data
+    if (TimeHandler::parseDateFromString(__DATE__, tm) && TimeHandler::parseTimeFromString(__TIME__, tm)){
       Serial.println("DS1307 stopped. Starting system time with compile time");
-      //This starts the local time object
       setTime(tm.Hour, tm.Minute, tm.Second, tm.Day, tm.Month, tm.Year);
       if (RTC.chipPresent()) {
         Serial.println("DS1307 was restarted with compile time");
@@ -45,43 +44,15 @@ byte TimeHandler::getHour(){
 }
 
 
-void TimeHandler::setDateWithString(String dateInformation){
-  char dateBuf[50];
-  dateInformation.toCharArray(dateBuf, 50);
-   if (this->getDateFromString(dateBuf)){
-      setTime(tm.Hour, tm.Minute, tm.Second, tm.Day, tm.Month, tm.Year);
-      if (RTC.chipPresent()) {
-        Serial.println("DS1307 was restarted with compile time");
-        //This writes time to the chip
-        RTC.write(tm);
-      } 
-      else {
-        Serial.println("DS1307 fatal communication error");
-      }
-   }
-}
-void TimeHandler::setTimeWithString(String timeInformation){
- char timeBuf[50];
-  timeInformation.toCharArray(timeBuf, 50); 
-   if (this->getTimeFromString(timeBuf)){
-      setTime(tm.Hour, tm.Minute, tm.Second, tm.Day, tm.Month, tm.Year);
-      if (RTC.chipPresent()) {
-        Serial.println("DS1307 was set with string.");
-        //This writes time to the chip
-        RTC.write(tm);
-      } 
-      else {
-        Serial.println("DS1307 fatal communication error");
-      }
-   }
-}
 //Helpers to set compile time defaults
 const char *monthName[12] = {
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 };
 
-bool TimeHandler::getDateFromString(const char *str){
+/* = Parsers
+--------------------------------------------------------------*/
+boolean TimeHandler::parseDateFromString(const char *str, tmElements_t tm){
   char Month[12];
   int Day, Year;
   uint8_t monthIndex;
@@ -96,7 +67,8 @@ bool TimeHandler::getDateFromString(const char *str){
   tm.Year = CalendarYrToTm(Year);
   return true;
 }
-bool TimeHandler::getTimeFromString(const char *str){
+
+boolean TimeHandler::parseTimeFromString(const char *str, tmElements_t tm){
   int Hour, Min, Sec;
 
   if (sscanf(str, "%d:%d:%d", &Hour, &Min, &Sec) != 3) return false;

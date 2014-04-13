@@ -11,10 +11,11 @@
 
 class SensorHandler {
 public:
-        void init();
-        int readTemperature();
-        int readAmbientLightLevel();
-        bool personIsPresent();
+  void init();
+  int readTemperature();
+  int readAmbientLightLevel();
+  boolean personIsPresent();
+  
 private:
   int fahrenheit(int celcius);
   dht11 tempSensor;
