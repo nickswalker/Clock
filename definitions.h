@@ -19,7 +19,19 @@ typedef enum Command{
   GETALARM = 6,
   SETSETTING = 7,
   GETSETTING = 8,
+  RESET = 254,
   TESTCONNECTION =255      
+};
+
+typedef enum AlarmNumber{
+  ALARM1 = 1,
+  ALARM2 = 2,
+  ALARM3 = 3,
+  ALARM4 = 4,
+  ALARM5 = 5,
+  ALARM6 = 6,
+  ALARM7 = 7,
+  ALARM8 = 8,
 };
 
 typedef enum Option{
@@ -27,8 +39,7 @@ typedef enum Option{
   BLINKCOLON,
   LOUDERALARM,
   AUTOBRIGHTNESS,
-  BRIGHTNESS,
-  DEBUGMODE
+  BRIGHTNESS
 };
 
 #endif

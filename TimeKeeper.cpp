@@ -1,11 +1,11 @@
-#include "TimeHandler.h"
+#include "TimeKeeper.h"
 #include <TimeAlarms.h>
 #include <DS1307RTC.h>
 #include <Time.h>
 
 tmElements_t tm;
 
-void TimeHandler::init(){
+void TimeKeeper::init(){
   //Read from the RTC and set the our soft clock based off of it
   
   if (RTC.read(tm)) {
@@ -15,7 +15,7 @@ void TimeHandler::init(){
   //Time couldn't be read
   else {
     //Try parsing time from compile-time data
-    if (TimeHandler::parseDateFromString(__DATE__, tm) && TimeHandler::parseTimeFromString(__TIME__, tm)){
+    if (TimeKeeper::parseDateFromString(__DATE__, tm) && TimeKeeper::parseTimeFromString(__TIME__, tm)){
       Serial.println("DS1307 stopped. Starting system time with compile time");
       setTime(tm.Hour, tm.Minute, tm.Second, tm.Day, tm.Month, tm.Year);
       if (RTC.chipPresent()) {
@@ -31,24 +31,24 @@ void TimeHandler::init(){
   }
   setSyncProvider(RTC.get);
   #ifdef DEBUG
-    Serial.println("TimeHandler setup complete");
+    Serial.println("TimeKeeper setup complete");
   #endif
 }
 
 /* = Time Getters and Setters
 --------------------------------------------------------------*/
-void TimeHandler::setAllTime(time_t time){
+void TimeKeeper::setAllTime(time_t time){
   RTC.set(time);
   setTime(time);
 }
  
-uint8_t TimeHandler::getSecond(){
+uint8_t TimeKeeper::getSecond(){
   return second();
 }
-uint8_t TimeHandler::getMinute(){
+uint8_t TimeKeeper::getMinute(){
   return minute();
 }
-uint8_t TimeHandler::getHour(){
+uint8_t TimeKeeper::getHour(){
   return hour();
 }
 
@@ -61,7 +61,7 @@ const char *monthName[12] = {
 
 /* = Parsers
 --------------------------------------------------------------*/
-boolean TimeHandler::parseDateFromString(const char *str, tmElements_t tm){
+boolean TimeKeeper::parseDateFromString(const char *str, tmElements_t tm){
   char Month[12];
   int Day, Year;
   uint8_t monthIndex;
@@ -77,7 +77,7 @@ boolean TimeHandler::parseDateFromString(const char *str, tmElements_t tm){
   return true;
 }
 
-boolean TimeHandler::parseTimeFromString(const char *str, tmElements_t tm){
+boolean TimeKeeper::parseTimeFromString(const char *str, tmElements_t tm){
   int Hour, Min, Sec;
 
   if (sscanf(str, "%d:%d:%d", &Hour, &Min, &Sec) != 3) return false;

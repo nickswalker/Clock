@@ -1,5 +1,5 @@
-#ifndef TimeHandler_H
-#define TimeHandler_H
+#ifndef TimeKeeper_H
+#define TimeKeeper_H
  
 #if defined(ARDUINO) && (ARDUINO >= 100)
 #include <Arduino.h>
@@ -11,7 +11,7 @@
 #include <DS1307RTC.h>
 #include <Time.h>
 
-class TimeHandler {
+class TimeKeeper {
 public:
   void init();
  
@@ -19,9 +19,6 @@ public:
   uint8_t getMinute();
   uint8_t getHour();
   void setAllTime(time_t time);
-  
-  void setAlarm();
-  void alarm();
   
 private:
   boolean parseDateFromString(const char *str, tmElements_t tm);

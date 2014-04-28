@@ -13,14 +13,16 @@
 
 #include "SensorHandler.h"
 #include "IOHandler.h"
-#include "TimeHandler.h"
+#include "TimeKeeper.h"
+#include "AlarmsManager.h"
 #include "Settings.h"
 #include "definitions.h"
 
 //(Empty) constructors get executed immediately
 SensorHandler sensors;
-TimeHandler time;
+TimeKeeper time;
 IOHandler io;
+AlarmsManager alarms;
 
 //Special definitions
 #define MESSAGE_SIZE 18 //Message is capped at 18 bytes due to the BLE profile. If we try to get any more we simply get the same values on loop
@@ -95,9 +97,22 @@ void checkForCommands(){
     case GETSETTING:
     {
       Option option = (Option)message[1];
-      #ifdef DEBUG
-        Serial.println (Settings::getBool(option) );
-      #endif
+      Serial.println (Settings::getBool(option) );
+      break;
+    }
+    case GETALARM:
+    {
+      AlarmNumber alarmNumber = (AlarmNumber)message[1];
+      Alarm tempAlarm = alarms.getAlarm(alarmNumber);
+      uint32_t alarmBinary = tempAlarm.getBinaryRepresentation();
+      
+      unsigned char byte1 = (alarmBinary >> 0);
+      unsigned char byte2 = (alarmBinary >> 8);
+      unsigned char byte3 = (alarmBinary >> 16);
+      unsigned char byte4 = (alarmBinary >> 24);
+      
+      unsigned char message[]  = { byte1, byte2, byte3, byte4};
+      Serial.write(message, 4);
       break;
     }
     case SETTIME:
