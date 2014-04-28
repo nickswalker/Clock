@@ -30,16 +30,25 @@ void TimeHandler::init(){
     
   }
   setSyncProvider(RTC.get);
-  Serial.println("TimeHandler setup complete");
+  #ifdef DEBUG
+    Serial.println("TimeHandler setup complete");
+  #endif
+}
+
+/* = Time Getters and Setters
+--------------------------------------------------------------*/
+void TimeHandler::setAllTime(time_t time){
+  RTC.set(time);
+  setTime(time);
 }
  
-byte TimeHandler::getSecond(){
+uint8_t TimeHandler::getSecond(){
   return second();
 }
-byte TimeHandler::getMinute(){
+uint8_t TimeHandler::getMinute(){
   return minute();
 }
-byte TimeHandler::getHour(){
+uint8_t TimeHandler::getHour(){
   return hour();
 }
 

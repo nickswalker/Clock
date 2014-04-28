@@ -14,7 +14,9 @@ void IOHandler::init(){
   strip.begin();
   matrix.begin(0x70);
   matrix.setBrightness(Settings::getByte(BRIGHTNESS));
-  Serial.println("IOHandler setup complete");
+  #ifdef DEBUG
+    Serial.println("IOHandler setup complete");
+  #endif
 }
 
 /* = Time Display
@@ -90,20 +92,18 @@ boolean IOHandler::checkIfSnoozeButtonWasPressed(){
 }
 void IOHandler::setAlarmState(boolean state){
   this->alarmIsOn = state;
-  if(state){
-    alarmBuzz(); 
-  }
-  else{
-    noTone(SPEAKERPIN);
-  }
+    if(state){
+      if(Settings::getBool(LOUDERALARM))  digitalWrite(SPEAKERPIN, HIGH);
+      else digitalWrite(SPEAKERPIN, HIGH);
+    }
+    else{
+      digitalWrite(SPEAKERPIN, LOW);
+      digitalWrite(SPEAKERPIN, LOW);
+    }
+
 }
 boolean IOHandler::getAlarmState(){
   return this->alarmIsOn;
-}
-void IOHandler::alarmBuzz(){
-  if(Settings::getBool(LOUDERALARM)) tone(SPEAKERPIN, 2000, 1000);
-  else tone(SPEAKERPIN, 100);
-   
 }
 
 

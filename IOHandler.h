@@ -22,7 +22,6 @@ public:
   void setLightColor(byte red, byte green, byte blue, bool animated);
         
 private:
-  void alarmBuzz();
   boolean alarmIsOn;
         
 };

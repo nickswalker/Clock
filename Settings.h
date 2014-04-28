@@ -15,7 +15,7 @@ public:
   static void set(Option option, byte value);
         
   static bool getBool(Option option);
-  static byte getByte(Option option);        
+  static uint8_t getByte(Option option);        
 
 };
  

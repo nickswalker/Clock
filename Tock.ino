@@ -24,16 +24,19 @@ IOHandler io;
 
 //Special definitions
 #define MESSAGE_SIZE 18 //Message is capped at 18 bytes due to the BLE profile. If we try to get any more we simply get the same values on loop
+#define DEBUG
 
 //Global vars
 unsigned long startTime;
-byte message[MESSAGE_SIZE];
+uint8_t message[MESSAGE_SIZE];
 
 
 void setup()  {
   pinMode(LEDPIN, OUTPUT); 
   Serial.begin(9600);
-  //Settings::setDefaults();
+  #ifdef DEBUG
+    Settings::setDefaults();
+  #endif
   //Illegitimate constructors since we can't declare in a greater scope without instantiating and we MUST have a serial connection before we can start I2C
   io.init();
   time.init();
@@ -53,12 +56,18 @@ void loop()  {
   
 }
 void checkForAlarms(){
+  
   if(!io.getAlarmState()){
-    if( time.getSecond() == 0 && time.getMinute() == 30 && time.getHour() == 6 ) io.setAlarmState(true); 
-    //if(time.getSecond() == 0) io.setAlarmState(true);
+    if(time.getSecond() == 0){
+      if( time.getMinute() == 30 && time.getHour() == 6 ) io.setAlarmState(true); 
+      #ifdef DEBUG
+        if(time.getSecond() == 0) io.setAlarmState(true);
+      #endif
+    }
+    if(io.checkIfSnoozeButtonWasPressed()) io.setAlarmState(true);
   }
   if(io.checkIfSnoozeButtonWasPressed()) io.setAlarmState(false);
-    
+  
 }
 
 void checkForCommands(){
@@ -67,7 +76,7 @@ void checkForCommands(){
     Serial.readBytes((char *)message,sizeof(message));
   }
    //First bit is the command bit. We can assume that the buffer is niled out if this bit is 0
-  if(message[0] > 0) {
+   if(message[0] > 0) {
     switch((Command)message[0]){
      case SETLIGHTCOLOR:{
        int r = message[1];
@@ -76,39 +85,42 @@ void checkForCommands(){
        io.setLightColor(r,g,b,0);
        break;
      }
-      case SETSETTING:{
-        Option option = (Option)message[1];
-        byte value = message[2];
-        Settings::set(option, value);
-        if(option == BRIGHTNESS) io.setBrightness(value);
-        break;
-      }
-      case GETSETTING:
-      {
-        Option option = (Option)message[1];
-        Serial.println (Settings::getBool(option) );
-        break;
-      }
-      case SETTIME:
-      {
-        time_t time = (uint32_t)message[1] + ((uint32_t)message[2] << 8) + ((uint32_t)message[3] << 16) + ((uint32_t)message[4] << 24); 
-        RTC.set(time);
-        setTime(time);
-        Serial.println(time);
-        break;
-      }
-      case TESTCONNECTION:
-      {
-        Serial.println("OK");
-        break;
-      }
+     case SETSETTING:{
+      Option option = (Option)message[1];
+      uint8_t value = message[2];
+      Settings::set(option, value);
+      if(option == BRIGHTNESS) io.setBrightness(value);
+      break;
     }
+    case GETSETTING:
+    {
+      Option option = (Option)message[1];
+      #ifdef DEBUG
+        Serial.println (Settings::getBool(option) );
+      #endif
+      break;
+    }
+    case SETTIME:
+    {
+      time_t tempTime = (uint32_t)message[1] + ((uint32_t)message[2] << 8) + ((uint32_t)message[3] << 16) + ((uint32_t)message[4] << 24); 
+      time.setAllTime(tempTime);
+      break;
+    }
+    case TESTCONNECTION:
+    {
+      Serial.println("OK");
+      break;
+    }
+  }
+  #ifdef DEBUG
     for(int i=0; i< sizeof(message); i++){
       Serial.print(i);Serial.print(": ");
       Serial.print(message[i]);
       Serial.println();
     }
-    Serial.println();
-    memset(message, 0, sizeof(message)); //set all indexes to 0
+  Serial.println();
+  #endif
+  
+  memset(message, 0, sizeof(message)); //set all indexes to 0
   }
 }

@@ -20,7 +20,7 @@ bool Settings::getBool(Option option){
   return (bool)EEPROM.read(option);
 }
 
-byte Settings::getByte(Option option){
+uint8_t Settings::getByte(Option option){
   return EEPROM.read(option);
 }
  

@@ -15,9 +15,10 @@ class TimeHandler {
 public:
   void init();
  
-  byte getSecond();
-  byte getMinute();
-  byte getHour();
+  uint8_t getSecond();
+  uint8_t getMinute();
+  uint8_t getHour();
+  void setAllTime(time_t time);
   
   void setAlarm();
   void alarm();

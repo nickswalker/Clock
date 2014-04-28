@@ -3,7 +3,9 @@
 #include <dht11.h>
 
 void SensorHandler::init(){
-  Serial.println("SensorHandler setup complete");
+  #ifdef DEBUG
+    Serial.println("SensorHandler setup complete");
+  #endif
 }
 
 int SensorHandler::readAmbientLightLevel(){
