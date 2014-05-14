@@ -10,6 +10,7 @@ Adafruit_7segment matrix = Adafruit_7segment();
 
 void IOHandler::init(){
   pinMode(BUTTONPIN, INPUT);
+  pinMode(SPEAKERPIN, OUTPUT); 
   strip.show(); // Initialize all pixels to 'off'
   strip.begin();
   matrix.begin(0x70);
@@ -62,10 +63,13 @@ void IOHandler::setBrightness(byte value){
 int buttonState;             // the current reading from the input pin
 int lastButtonState = LOW;   // the previous reading from the input pin
 long lastDebounceTime = 0;  // the last time the output pin was toggled
-long debounceDelay = 50;    // the debounce time; increase if the output flickers
+long debounceDelay = 2;    // the debounce time; increase if the output flickers
 
 boolean IOHandler::checkIfSnoozeButtonWasPressed(){
-  int reading = digitalRead(BUTTONPIN);
+  int reading = analogRead(PIEZOPIN);
+  
+  if(reading > 600) reading = HIGH;
+  else reading = LOW;
   boolean buttonWasPressed = false;
   // If the switch changed, due to noise or pressing:
   if (reading != lastButtonState) {
@@ -90,16 +94,19 @@ boolean IOHandler::checkIfSnoozeButtonWasPressed(){
   lastButtonState = reading;
   return buttonWasPressed;
 }
+
+/* = Alarm
+--------------------------------------------------------------*/
 void IOHandler::setAlarmState(boolean state){
-  this->alarmIsOn = state;
+  
     if(state){
       if(Settings::getBool(LOUDERALARM))  digitalWrite(SPEAKERPIN, HIGH);
       else digitalWrite(SPEAKERPIN, HIGH);
     }
     else{
       digitalWrite(SPEAKERPIN, LOW);
-      digitalWrite(SPEAKERPIN, LOW);
     }
+    this->alarmIsOn = state;
 
 }
 boolean IOHandler::getAlarmState(){

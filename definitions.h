@@ -1,16 +1,15 @@
 #ifndef definitionsH
 #define definitionsH
 
-#define DHT11PIN 2
 #define SPEAKERPIN 2
-#define PIRSENSORPIN 4
 #define BUTTONPIN 5
 #define STRIPPIN 9
 #define LEDPIN 13
-#define PHOTORESISTORPIN 14
-#define IRLEDPIN 14
+#define PHOTORESISTORPIN A0
+#define PIEZOPIN A1
+#define IRLEDPIN 0
 
-typedef enum Command{
+typedef enum {
   SETDATE = 1,
   SETTIME = 2,
   SETLIGHTCOLOR = 3,
@@ -21,9 +20,9 @@ typedef enum Command{
   GETSETTING = 8,
   RESET = 254,
   TESTCONNECTION =255      
-};
+} Command;
 
-typedef enum AlarmNumber{
+typedef enum{
   ALARM1 = 1,
   ALARM2 = 2,
   ALARM3 = 3,
@@ -32,14 +31,14 @@ typedef enum AlarmNumber{
   ALARM6 = 6,
   ALARM7 = 7,
   ALARM8 = 8,
-};
+}  AlarmNumber;
 
-typedef enum Option{
+typedef enum {
   DISPLAYTWENTYFOURHOURTIME,
   BLINKCOLON,
   LOUDERALARM,
   AUTOBRIGHTNESS,
   BRIGHTNESS
-};
+} Option;
 
 #endif

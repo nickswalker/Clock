@@ -11,21 +11,24 @@
 #include <EEPROM.h>
 //Arduino will only check this file for libraries to include, so we need to pull them all in here
 
+#include "Alarm.h"
 #include "SensorHandler.h"
 #include "IOHandler.h"
 #include "TimeKeeper.h"
 #include "AlarmsManager.h"
 #include "Settings.h"
+
 #include "definitions.h"
 
 //(Empty) constructors get executed immediately
+class Alarm;
 SensorHandler sensors;
 TimeKeeper time;
 IOHandler io;
 AlarmsManager alarms;
 
 //Special definitions
-#define MESSAGE_SIZE 18 //Message is capped at 18 bytes due to the BLE profile. If we try to get any more we simply get the same values on loop
+#define MESSAGE_SIZE 18 //Message is capped at 18 bytes due to the BLE profile. If we try to get any more we simply get the same values on loop (ring buffer)
 #define DEBUG
 
 //Global vars
@@ -44,6 +47,7 @@ void setup()  {
   time.init();
   sensors.init();
   Serial.println("Setup complete");
+  //alarms.setAlarm((AlarmNumber)1,);
 } 
 
 void loop()  { 
@@ -58,17 +62,18 @@ void loop()  {
   
 }
 void checkForAlarms(){
-  
+  //If alarms are off
   if(!io.getAlarmState()){
+    //Only check for alarms at the beggining of each minute
     if(time.getSecond() == 0){
       if( time.getMinute() == 30 && time.getHour() == 6 ) io.setAlarmState(true); 
       #ifdef DEBUG
-        if(time.getSecond() == 0) io.setAlarmState(true);
+        io.setAlarmState(true);
       #endif
     }
     if(io.checkIfSnoozeButtonWasPressed()) io.setAlarmState(true);
   }
-  if(io.checkIfSnoozeButtonWasPressed()) io.setAlarmState(false);
+  else if(io.checkIfSnoozeButtonWasPressed()) io.setAlarmState(false);
   
 }
 
@@ -102,10 +107,8 @@ void checkForCommands(){
     }
     case GETALARM:
     {
-      AlarmNumber alarmNumber = (AlarmNumber)message[1];
-      Alarm tempAlarm = alarms.getAlarm(alarmNumber);
-      uint32_t alarmBinary = tempAlarm.getBinaryRepresentation();
-      
+     
+      uint32_t alarmBinary = alarms.getAlarm((AlarmNumber)message[1]);
       unsigned char byte1 = (alarmBinary >> 0);
       unsigned char byte2 = (alarmBinary >> 8);
       unsigned char byte3 = (alarmBinary >> 16);
@@ -129,9 +132,9 @@ void checkForCommands(){
   }
   #ifdef DEBUG
     for(int i=0; i< sizeof(message); i++){
-      Serial.print(i);Serial.print(": ");
-      Serial.print(message[i]);
-      Serial.println();
+      //Serial.print(i);Serial.print(": ");
+      //Serial.print(message[i]);
+      //Serial.println();
     }
   Serial.println();
   #endif
