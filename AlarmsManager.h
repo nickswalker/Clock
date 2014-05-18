@@ -10,11 +10,15 @@
 #include <WProgram.h>
 #endif
 
+
 class AlarmsManager {
 public:
-  Alarm getAlarm(AlarmNumber alarmNumber);
+
+  uint32_t getAlarm(AlarmNumber alarmNumber);
   AlarmNumber getNextEmptyAlarm();
   void clearAlarm(AlarmNumber alarmNumber);
+  boolean checkIfTimeTriggersAnyAlarm(uint8_t hour, uint8_t minute);
+  void setAlarm(AlarmNumber alarmNumber, uint32_t alarmBinary);
 private:        
 
 };

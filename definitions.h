@@ -29,8 +29,7 @@ typedef enum{
   ALARM4 = 4,
   ALARM5 = 5,
   ALARM6 = 6,
-  ALARM7 = 7,
-  ALARM8 = 8,
+  ALARM7 = 7
 }  AlarmNumber;
 
 typedef enum {
@@ -40,5 +39,19 @@ typedef enum {
   AUTOBRIGHTNESS,
   BRIGHTNESS
 } Option;
+typedef enum WeekBits{
+  SUNDAY = 1 << 1,
+  MONDAY = 1 << 2,
+  TUESDAY = 1 << 3,
+  WEDNESDAY = 1 << 4,
+  THURSDAY = 1 << 5,
+  FRIDAY = 1 << 6,
+  SATURDAY = 1 << 7    
+};
 
+typedef struct{
+  unsigned char activeAndRepeatSchedule;
+  unsigned char hour;
+  unsigned char minute;
+} alarm_t;
 #endif

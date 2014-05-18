@@ -100,8 +100,7 @@ boolean IOHandler::checkIfSnoozeButtonWasPressed(){
 void IOHandler::setAlarmState(boolean state){
   
     if(state){
-      if(Settings::getBool(LOUDERALARM))  digitalWrite(SPEAKERPIN, HIGH);
-      else digitalWrite(SPEAKERPIN, HIGH);
+      digitalWrite(SPEAKERPIN, HIGH);
     }
     else{
       digitalWrite(SPEAKERPIN, LOW);

@@ -19,9 +19,9 @@
 #include "Settings.h"
 
 #include "definitions.h"
+#include "PackingFunctions.h"
 
 //(Empty) constructors get executed immediately
-class Alarm;
 SensorHandler sensors;
 TimeKeeper time;
 IOHandler io;
@@ -66,12 +66,11 @@ void checkForAlarms(){
   if(!io.getAlarmState()){
     //Only check for alarms at the beggining of each minute
     if(time.getSecond() == 0){
-      if( time.getMinute() == 30 && time.getHour() == 6 ) io.setAlarmState(true); 
+      if(alarms.checkIfTimeTriggersAnyAlarm(time.getHour(),time.getMinute() ) io.setAlarmState(true); 
       #ifdef DEBUG
         io.setAlarmState(true);
       #endif
     }
-    if(io.checkIfSnoozeButtonWasPressed()) io.setAlarmState(true);
   }
   else if(io.checkIfSnoozeButtonWasPressed()) io.setAlarmState(false);
   
@@ -107,26 +106,33 @@ void checkForCommands(){
     }
     case GETALARM:
     {
-     
-      uint32_t alarmBinary = alarms.getAlarm((AlarmNumber)message[1]);
-      unsigned char byte1 = (alarmBinary >> 0);
-      unsigned char byte2 = (alarmBinary >> 8);
-      unsigned char byte3 = (alarmBinary >> 16);
-      unsigned char byte4 = (alarmBinary >> 24);
+      AlarmNumber alarmNumber = (AlarmNumber)message[1];
+      uint32_t alarmBinary = alarms.getAlarm(alarmNumber);
+      uint8_t bytes[4];
+      PackingFunctions::intToFourBytes(alarmBinary, bytes);
       
-      unsigned char message[]  = { byte1, byte2, byte3, byte4};
-      Serial.write(message, 4);
+      uint8_t message[6]  = { GETALARM, alarmNumber, bytes[0],bytes[1], bytes[2], bytes[3]};
+      Serial.write(message, sizeof(message));
+      break;
+    }
+    //SETALARM, ALARM NUMBER, minutes, hour, repeat, 0
+    case SETALARM:
+    {
+     
+     uint32_t alarm = PackingFunctions::fourSeperateBytesToInt(  (uint32_t)message[2], (uint32_t)message[3], (uint32_t)message[4], (uint32_t)message[5] );
+      alarms.setAlarm( (AlarmNumber) message[1], alarm);
       break;
     }
     case SETTIME:
     {
-      time_t tempTime = (uint32_t)message[1] + ((uint32_t)message[2] << 8) + ((uint32_t)message[3] << 16) + ((uint32_t)message[4] << 24); 
+      time_t tempTime = PackingFunctions::fourSeperateBytesToInt( (uint32_t)message[1], (uint32_t)message[2], (uint32_t)message[3], (uint32_t)message[4] ); 
       time.setAllTime(tempTime);
       break;
     }
     case TESTCONNECTION:
     {
-      Serial.println("OK");
+      unsigned char message[]  = { TESTCONNECTION};
+      Serial.write(message, sizeof(message));
       break;
     }
   }
@@ -136,7 +142,7 @@ void checkForCommands(){
       //Serial.print(message[i]);
       //Serial.println();
     }
-  Serial.println();
+  //Serial.println();
   #endif
   
   memset(message, 0, sizeof(message)); //set all indexes to 0

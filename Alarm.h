@@ -9,21 +9,7 @@
 #include <WProgram.h>
 #endif
 
-typedef enum WeekBits{
-  SUNDAY = 1 << 1,
-  MONDAY = 1 << 2,
-  TUESDAY = 1 << 3,
-  WEDNESDAY = 1 << 4,
-  THURSDAY = 1 << 5,
-  FRIDAY = 1 << 6,
-  SATURDAY = 1 << 7    
-};
 
-typedef struct{
-  uint8_t activeAndRepeatSchedule;
-  uint8_t hour;
-  uint8_t minute;
-} alarm;
 
 class Alarm {
 public:
@@ -31,6 +17,8 @@ public:
   Alarm();
   Alarm(uint32_t packedAlarm);
   Alarm(uint8_t activeAndRepeat, uint8_t hour, uint8_t minute);
+  
+  void init(uint8_t activeAndRepeat, uint8_t hour, uint8_t minute);
   
   boolean isActive();
   boolean isActiveOnDay(int day);
@@ -43,7 +31,7 @@ public:
  
 private:        
   boolean testIfDayMatches(int day, byte weekBitmask);        
-  alarm binaryRepresentation;
+  alarm_t binaryRepresentation;
 };
  
 #endif
