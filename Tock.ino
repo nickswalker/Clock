@@ -66,9 +66,9 @@ void checkForAlarms(){
   if(!io.getAlarmState()){
     //Only check for alarms at the beggining of each minute
     if(time.getSecond() == 0){
-      if(alarms.checkIfTimeTriggersAnyAlarm(time.getHour(),time.getMinute() ) io.setAlarmState(true); 
+      if( alarms.checkIfTimeTriggersAnyAlarm(time.getHour(),time.getMinute()) ) io.setAlarmState(true); 
       #ifdef DEBUG
-        io.setAlarmState(true);
+        //io.setAlarmState(true);
       #endif
     }
   }
@@ -101,7 +101,8 @@ void checkForCommands(){
     case GETSETTING:
     {
       Option option = (Option)message[1];
-      Serial.println (Settings::getBool(option) );
+      uint8_t message[3]  = { GETSETTING, option, Settings::getByte(option)};
+      Serial.write(message, sizeof(message));
       break;
     }
     case GETALARM:
