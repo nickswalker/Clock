@@ -7,7 +7,7 @@
 #define LEDPIN 13
 #define PHOTORESISTORPIN A0
 #define PIEZOPIN A1
-#define IRLEDPIN 0
+#define IRLEDPIN 10
 
 typedef enum {
   SETDATE = 1,

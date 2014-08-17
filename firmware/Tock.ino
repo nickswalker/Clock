@@ -1,4 +1,4 @@
- //#include <IRremote.h>
+#include <IRremote.h>
 //#include <IRremoteInt.h>
 #include <Time.h>
 #include <dht11.h>
@@ -50,7 +50,10 @@ void setup()  {
   //alarms.setAlarm((AlarmNumber)1,);
 } 
 
+IRsend irsend;
 void loop()  { 
+  
+    
   checkForAlarms();
   checkForCommands();
   
@@ -66,13 +69,19 @@ void checkForAlarms(){
   if(!io.getAlarmState()){
     //Only check for alarms at the beggining of each minute
     if(time.getSecond() == 0){
-      if( alarms.checkIfTimeTriggersAnyAlarm(time.getHour(),time.getMinute()) ) io.setAlarmState(true); 
+      if( alarms.checkIfTimeTriggersAnyAlarm(time.getHour(),time.getMinute()) ){
+        io.setAlarmState(true); 
+        irsend.sendSony(0xa90, 12); 
+      }
       #ifdef DEBUG
         //io.setAlarmState(true);
       #endif
     }
   }
-  else if(io.checkIfSnoozeButtonWasPressed()) io.setAlarmState(false);
+  else if(io.checkIfSnoozeButtonWasPressed()){
+    io.setAlarmState(false);
+    irsend.sendSony(0xa90, 12);
+  }
   
 }
 

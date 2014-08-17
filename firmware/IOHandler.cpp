@@ -63,12 +63,12 @@ void IOHandler::setBrightness(byte value){
 int buttonState;             // the current reading from the input pin
 int lastButtonState = LOW;   // the previous reading from the input pin
 long lastDebounceTime = 0;  // the last time the output pin was toggled
-long debounceDelay = 2;    // the debounce time; increase if the output flickers
+long debounceDelay = 1;    // the debounce time; increase if the output flickers
 
 boolean IOHandler::checkIfSnoozeButtonWasPressed(){
   int reading = analogRead(PIEZOPIN);
   
-  if(reading > 600) reading = HIGH;
+  if(reading > 1003) reading = HIGH;
   else reading = LOW;
   boolean buttonWasPressed = false;
   // If the switch changed, due to noise or pressing:
@@ -101,10 +101,12 @@ void IOHandler::setAlarmState(boolean state){
   
     if(state){
       digitalWrite(SPEAKERPIN, HIGH);
+      digitalWrite(IRLEDPIN, HIGH);
     }
     else{
       digitalWrite(SPEAKERPIN, LOW);
-    }
+      digitalWrite(IRLEDPIN, LOW);
+     }
     this->alarmIsOn = state;
 
 }
