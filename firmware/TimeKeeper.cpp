@@ -45,13 +45,14 @@ void TimeKeeper::setAllTime(time_t time){
 uint8_t TimeKeeper::getSecond(){
   return second();
 }
+
 uint8_t TimeKeeper::getMinute(){
   return minute();
 }
+
 uint8_t TimeKeeper::getHour(){
   return hour();
 }
-
 
 //Helpers to set compile time defaults
 const char *monthName[12] = {

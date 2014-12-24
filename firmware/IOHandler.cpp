@@ -5,14 +5,11 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_NeoPixel.h>
 
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(7, STRIPPIN, NEO_GRB + NEO_KHZ800);
 Adafruit_7segment matrix = Adafruit_7segment();
 
 void IOHandler::init(){
   pinMode(BUTTONPIN, INPUT);
-  pinMode(SPEAKERPIN, OUTPUT); 
-  strip.show(); // Initialize all pixels to 'off'
-  strip.begin();
+  pinMode(SPEAKERPIN, OUTPUT);
   matrix.begin(0x70);
   matrix.setBrightness(Settings::getByte(BRIGHTNESS));
   #ifdef DEBUG
@@ -23,39 +20,51 @@ void IOHandler::init(){
 /* = Time Display
 --------------------------------------------------------------*/
 
-typedef enum DisplayDotsProperties{
-  COLON = 1 << 1,
-  UPPERLEFTDOT = 1 << 2,
-  LOWERLEFTDOT = 1 << 3,
-  UPPERRIGHTDOT = 1 << 4
-        
-};
+typedef enum{
+    COLON = 1 << 1,
+    UPPERLEFTDOT = 1 << 2,
+    LOWERLEFTDOT = 1 << 3,
+    UPPERRIGHTDOT = 1 << 4
+} DisplayDotsProperties;
 
 void IOHandler::displayTime(byte hour, byte minute, byte second){
-  matrix.clear();
-  byte dotsBitmask = 0;
-  dotsBitmask |= COLON;
-  if( Settings::getBool(BLINKCOLON) && (second % 2 == 1) ) dotsBitmask ^= COLON; 
-  if( !Settings::getBool(DISPLAYTWENTYFOURHOURTIME) ){
-    if(hour>=13){
-      hour -= 12;
-      dotsBitmask |= UPPERLEFTDOT;
+    matrix.clear();
+    char dotsBitmask = 0;
+    dotsBitmask |= COLON;
+    boolean evenSecond = (second % 2) == 1;
+    if( Settings::getBool(BLINKCOLON) && evenSecond ){
+        //Toggle the colon bit
+        dotsBitmask ^= COLON;
     }
-  }
+    if( !Settings::getBool(DISPLAYTWENTYFOURHOURTIME) ){
+        if(hour >= 13){
+            hour -= 12;
+            dotsBitmask |= UPPERLEFTDOT;
+        }
+    }
+
+    int rightHour = hour % 10;
+    int leftHour = hour / 10;
+
+    int rightMinute = minute % 10;
+    int leftMinute = minute / 10;
+
+
+    matrix.writeDigitNum(1, rightHour);
+    matrix.writeDigitNum(3, 0);
+    matrix.writeDigitNum(4, rightMinute);
+    if(leftHour >= 1){
+        matrix.writeDigitNum(0, leftHour);
+    }
+    matrix.writeDigitNum(3, minute / 10);
   
-  matrix.writeDigitNum(1,hour%10);
-  matrix.writeDigitNum(3,0);
-  matrix.writeDigitNum(4,minute%10);
-  if(hour >= 10) matrix.writeDigitNum(0,hour/10);
-  if (minute >= 10) matrix.writeDigitNum(3,minute/10);
-  
-  matrix.writeDigitRaw(2, dotsBitmask);
-  matrix.writeDisplay();
+    matrix.writeDigitRaw(2, dotsBitmask);
+    matrix.writeDisplay();
 
 }
 
 void IOHandler::setBrightness(byte value){
-   matrix.setBrightness((int)value);
+     matrix.setBrightness((int)value);
 }
 
 /* = Snooze Button
@@ -68,13 +77,17 @@ long debounceDelay = 1;    // the debounce time; increase if the output flickers
 boolean IOHandler::checkIfSnoozeButtonWasPressed(){
   int reading = analogRead(PIEZOPIN);
   
-  if(reading > 1003) reading = HIGH;
-  else reading = LOW;
+  if (reading > 1003){
+      reading = HIGH;
+  }
+  else{
+      reading = LOW;
+  }
   boolean buttonWasPressed = false;
   // If the switch changed, due to noise or pressing:
   if (reading != lastButtonState) {
-    // reset the debouncing timer
-    lastDebounceTime = millis();
+      // reset the debouncing timer
+      lastDebounceTime = millis();
   } 
   
   if ((millis() - lastDebounceTime) > debounceDelay) {
@@ -82,14 +95,14 @@ boolean IOHandler::checkIfSnoozeButtonWasPressed(){
     // than the debounce delay, so take it as the actual current state:
 
     // if the button state has changed:
-    if (reading != buttonState) {
-      buttonState = reading;
+      if (reading != buttonState) {
+          buttonState = reading;
       
-      if (buttonState == HIGH) {
-        buttonWasPressed = true;
+          if (buttonState == HIGH) {
+              buttonWasPressed = true;
+          }
+      
       }
-      
-    }
   }
   lastButtonState = reading;
   return buttonWasPressed;
@@ -98,29 +111,18 @@ boolean IOHandler::checkIfSnoozeButtonWasPressed(){
 /* = Alarm
 --------------------------------------------------------------*/
 void IOHandler::setAlarmState(boolean state){
-  
     if(state){
       digitalWrite(SPEAKERPIN, HIGH);
-      digitalWrite(IRLEDPIN, HIGH);
     }
     else{
       digitalWrite(SPEAKERPIN, LOW);
-      digitalWrite(IRLEDPIN, LOW);
      }
     this->alarmIsOn = state;
 
 }
 boolean IOHandler::getAlarmState(){
-  return this->alarmIsOn;
+    return this->alarmIsOn;
 }
 
 
-/* = Built in Lights
---------------------------------------------------------------*/
-void IOHandler::setLightColor(byte r, byte g, byte b, bool animated){
-  for(int i=0; i<strip.numPixels(); i++) {
-    strip.setPixelColor(i,r,g,b);
-  }
-  strip.show();
-}
 

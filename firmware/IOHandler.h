@@ -17,9 +17,7 @@ public:
   boolean checkIfSnoozeButtonWasPressed();
   void setAlarmState(boolean state);
   boolean getAlarmState();
-        
-  void runWakeSequence(int speed, int temperature);
-  void setLightColor(byte red, byte green, byte blue, bool animated);
+
         
 private:
   boolean alarmIsOn;
