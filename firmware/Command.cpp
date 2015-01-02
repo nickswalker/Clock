@@ -10,7 +10,24 @@
 #include "GetSettingCommand.h"
 #include "SetTimeCommand.h"
 
-Command* Command::construct(uint8_t message[]){
+typedef enum {
+    SETTIME = 1,
+    SETLIGHTCOLOR = 2,
+    GETLIGHTCOLOR = 3,
+    SETALARM = 4,
+    GETALARM = 5,
+    SETSETTING = 6,
+    GETSETTING = 7,
+    RESET = 254,
+    TESTCONNECTION = 255
+} CommandFlag;
+
+/**
+  * A factory method that will return a pointer to a fully
+  * configured command object represented by a message. If
+  * no command could be parsed, returns a null pointer.
+  */
+Command* Command::parse(uint8_t message[]){
     Command* returnCommand = NULL;
     switch((CommandFlag)message[0]){
         case SETLIGHTCOLOR:{

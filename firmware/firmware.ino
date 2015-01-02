@@ -75,12 +75,12 @@ void checkForAlarms(){
     if (!io.getAlarmState()){
       //Only check for alarms at the beggining of each minute
       if (time.getSecond() == 0){
-      if (alarms.checkIfTimeTriggersAnyAlarm(time.getHour(),time.getMinute()) ){
-          io.setAlarmState(true); 
-      }
-      #ifdef DEBUG
-          io.setAlarmState(true);
-      #endif
+          if (alarms.checkIfTimeTriggersAnyAlarm(time.getHour(),time.getMinute()) ){
+              io.setAlarmState(true); 
+          }
+          #ifdef DEBUG
+              io.setAlarmState(true);
+          #endif
     }
   }
   else if(io.checkIfSnoozeButtonWasPressed()){
@@ -89,23 +89,30 @@ void checkForAlarms(){
   
 }
 
+/**
+  *
+  */
 void checkForCommands(){
   while (Serial.available() > 0)  {
       Serial.setTimeout(100);
       Serial.readBytes((char *)message,sizeof(message));
   }
-  Command* command = Command::construct(message);
-  Command& dereferenced = *command;
-  dereferenced.execute();
-  delete command;
-  #ifdef DEBUG
-      for(int i=0; i< sizeof(message); i++){
-          Serial.print(i);Serial.print(": ");
-          Serial.print(message[i]);
-          Serial.println();
+  if(message[0] != 0){
+      Command* command = Command::parse(message);
+      if(command != NULL){
+          Command& dereferenced = *command;
+          dereferenced.execute();
+          delete command;
       }
-      Serial.println();
-  #endif
+      #ifdef DEBUG
+          for(int i=0; i< sizeof(message); i++){
+              Serial.print(i);Serial.print(": ");
+              Serial.print(message[i]);
+              Serial.println();
+          }
+          Serial.println();
+      #endif
+  }
 
   memset(message, 0, sizeof(message)); //set all indexes to 0
 }

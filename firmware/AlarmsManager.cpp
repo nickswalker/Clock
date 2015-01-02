@@ -2,15 +2,7 @@
 #include "AlarmT.h"
 #include "Time.h"
 #include "Settings.h"
-#include "BitManipulation.h"
 #include <EEPROM.h>
-
-#define MINUTEINDEX 0
-#define HOURINDEX 1
-#define REPEATINDEX 2
-
-//MINUTE HOUR REPEAT
-//BYTE0  BYTE1 BYTE2
 
 void AlarmsManager::setAlarm(AlarmNumber alarmNumber, AlarmT alarm){
     EEPROM.write(Settings::getAlarmMinuteAddress(alarmNumber), alarm.getTriggerMinute());

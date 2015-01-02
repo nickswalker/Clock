@@ -120,6 +120,7 @@ void IOHandler::setAlarmState(boolean state){
     this->alarmIsOn = state;
 
 }
+
 boolean IOHandler::getAlarmState(){
     return this->alarmIsOn;
 }

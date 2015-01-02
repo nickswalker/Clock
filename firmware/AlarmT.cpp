@@ -2,6 +2,7 @@
 #include "BitManipulation.h"
 #include "Time.h"
 #include "Settings.h"
+#include <Arduino.h>
 
 typedef enum {
     ON = 1 << 0 ,
@@ -14,10 +15,14 @@ typedef enum {
     SATURDAY = 1 << 7
 } RepeatSchedule;
 
+#define MINUTEINDEX 0
+#define HOURINDEX 1
+#define SCHEDULEINDEX 2
+
 AlarmT::AlarmT(uint32_t packedAlarm){
     uint8_t bytes[4];
     BitManipulation::intToBytes(packedAlarm, bytes);
-    init(bytes[REPEATINDEX],bytes[HOURINDEX],bytes[MINUTEINDEX]);
+    init(bytes[SCHEDULEINDEX],bytes[HOURINDEX],bytes[MINUTEINDEX]);
 }
 
 AlarmT::AlarmT(uint8_t schedule, uint8_t hour, uint8_t minute){
@@ -31,22 +36,21 @@ void AlarmT::init(uint8_t schedule, uint8_t hour, uint8_t minute){
 }
 
 boolean AlarmT::isOn(){
-    return BitManipulation::checkBit(this->binary.schedule, ON);
+    return bitRead(this->binary.schedule, ON);
 }
 
 boolean AlarmT::isActiveOnDay(timeDayOfWeek_t day){
-    return BitManipulation::checkBit(this->binary.schedule, day);
+    return bitRead(this->binary.schedule, day);
 }
 
 void AlarmT::setOn(boolean value){
     uint8_t oldValue = this->binary.schedule;
-    this->binary.schedule = 
-    BitManipulation::setBit(oldValue, ON, value);
+    this->binary.schedule = bitWrite(oldValue, ON, value);
 }
 
 void AlarmT::setActiveOnDay(timeDayOfWeek_t day, boolean value){
     uint8_t oldValue = this->binary.schedule;
-    this->binary.schedule = BitManipulation::setBit(oldValue, (int)day, value);
+    this->binary.schedule = bitWrite(oldValue, (int)day, value);
 }
 
 uint8_t AlarmT::getTriggerHour(){

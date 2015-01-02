@@ -23,16 +23,3 @@ boolean BitManipulation::intToBytes(uint32_t integer, uint8_t bytes[]){
 
     return true;
 }
-
-uint8_t BitManipulation::setBit(uint8_t integer, int i, boolean value ){
-    int shifted = (int)value << i;
-    int mask = ~(shifted);
-    return (integer & mask) | (shifted);
-}
-
-//Returns true if the i-th bit is 1.
-//i is 0 indexed
-boolean BitManipulation::checkBit(uint8_t integer, int i){
-    int mask = 1 << i;
-    return (integer & mask) != 0;
-}
