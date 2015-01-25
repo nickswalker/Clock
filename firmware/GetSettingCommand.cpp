@@ -10,6 +10,6 @@ GetSettingCommand::GetSettingCommand(uint8_t message[]){
 }
 
 void GetSettingCommand::execute(){
-    uint8_t outMessage[] = {GETSETTING, Settings::getByte(option)};
-    Serial.write(outMessage, 2);
+    uint8_t outMessage[] = {GETSETTING, option, Settings::getByte(option)};
+    Serial.write(outMessage, 3);
 }

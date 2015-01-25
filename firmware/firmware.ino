@@ -34,7 +34,7 @@ AlarmsManager alarms;
 
 //Special definitions
 #define MESSAGE_SIZE 18 //Message is capped at 18 bytes due to the BLE profile. If we try to get any more we simply get the same values on loop (ring buffer)
-#define DEBUG
+//#define DEBUG
 
 //Global vars
 unsigned long startTime;

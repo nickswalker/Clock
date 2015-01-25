@@ -10,18 +10,6 @@
 #include "GetSettingCommand.h"
 #include "SetTimeCommand.h"
 
-typedef enum {
-    SETTIME = 1,
-    SETLIGHTCOLOR = 2,
-    GETLIGHTCOLOR = 3,
-    SETALARM = 4,
-    GETALARM = 5,
-    SETSETTING = 6,
-    GETSETTING = 7,
-    RESET = 254,
-    TESTCONNECTION = 255
-} CommandFlag;
-
 /**
   * A factory method that will return a pointer to a fully
   * configured command object represented by a message. If

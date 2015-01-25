@@ -13,9 +13,8 @@
 typedef enum {
     DISPLAYTWENTYFOURHOURTIME = 1,
     BLINKCOLON = 2,
-    LOUDERALARM = 3,
-    AUTOBRIGHTNESS = 4,
-    BRIGHTNESS = 5
+    AUTOBRIGHTNESS = 3,
+    BRIGHTNESS = 4
 } Option;
 
 class Settings {

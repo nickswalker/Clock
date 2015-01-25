@@ -9641,26 +9641,6 @@ Basic schematic elements and footprints for 0603, 1206, and PTH resistors.</desc
 </device>
 </devices>
 </deviceset>
-<deviceset name="0.3OHM-1/8W-1%(0805)" prefix="R" uservalue="yes">
-<description>RES-11622</description>
-<gates>
-<gate name="G$1" symbol="RESISTOR" x="0" y="0"/>
-</gates>
-<devices>
-<device name="" package="0805">
-<connects>
-<connect gate="G$1" pin="1" pad="1"/>
-<connect gate="G$1" pin="2" pad="2"/>
-</connects>
-<technologies>
-<technology name="">
-<attribute name="PROD_ID" value="RES-11622"/>
-<attribute name="VALUE" value="0.3"/>
-</technology>
-</technologies>
-</device>
-</devices>
-</deviceset>
 </devicesets>
 </library>
 <library name="SparkFun-Passives">
@@ -11667,14 +11647,13 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <part name="U$7" library="SparkFun" deviceset="OSHW-LOGO" device="M"/>
 <part name="U$2" library="SparkFun" deviceset="5V" device=""/>
 <part name="GND14" library="SparkFun" deviceset="GND" device=""/>
+<part name="U$9" library="SparkFun" deviceset="5V" device=""/>
 <part name="BLE" library="SparkFun-Connectors" deviceset="M04" device="LOCK"/>
 <part name="DISPLAY" library="SparkFun-Connectors" deviceset="M04" device="LOCK"/>
 <part name="RTC" library="SparkFun-Connectors" deviceset="M04" device="LOCK"/>
 <part name="C11" library="SparkFun-Passives" deviceset="CAP" device="0805" value="220uf"/>
 <part name="C1" library="SparkFun-Passives" deviceset="CAP" device="0805" value="10uf"/>
 <part name="C4" library="SparkFun-Passives" deviceset="CAP" device="0805" value="10uf"/>
-<part name="R6" library="SparkFun-Resistors" deviceset="0.3OHM-1/8W-1%(0805)" device="" value="10K"/>
-<part name="GND10" library="SparkFun" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -11684,7 +11663,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <instance part="IC1" gate="A" x="-58.42" y="-53.34"/>
 <instance part="R1" gate="G$1" x="-27.94" y="-55.88" rot="R90"/>
 <instance part="R2" gate="G$1" x="-40.64" y="-55.88"/>
-<instance part="BUZ" gate="1" x="-58.42" y="-35.56" rot="MR0"/>
+<instance part="BUZ" gate="1" x="-66.04" y="-35.56"/>
 <instance part="FRAME1" gate="G$1" x="-114.3" y="-83.82"/>
 <instance part="FRAME1" gate="G$2" x="33.02" y="-83.82"/>
 <instance part="AD" gate="G$1" x="58.42" y="17.78" smashed="yes" rot="R180">
@@ -11757,14 +11736,13 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <instance part="U$7" gate="G$1" x="-101.6" y="-73.66"/>
 <instance part="U$2" gate="G$1" x="-27.94" y="-60.96" rot="R270"/>
 <instance part="GND14" gate="1" x="-68.58" y="-73.66"/>
+<instance part="U$9" gate="G$1" x="-68.58" y="-38.1" rot="R90"/>
 <instance part="BLE" gate="G$1" x="116.84" y="-10.16" rot="R180"/>
 <instance part="DISPLAY" gate="G$1" x="116.84" y="-30.48" rot="R180"/>
 <instance part="RTC" gate="G$1" x="116.84" y="38.1" rot="R180"/>
 <instance part="C11" gate="G$1" x="-93.98" y="-55.88"/>
 <instance part="C1" gate="G$1" x="-48.26" y="76.2"/>
 <instance part="C4" gate="G$1" x="-25.4" y="73.66"/>
-<instance part="R6" gate="G$1" x="-76.2" y="-55.88" rot="R90"/>
-<instance part="GND10" gate="1" x="-73.66" y="-38.1" rot="R270"/>
 </instances>
 <busses>
 </busses>
@@ -12027,6 +12005,10 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <junction x="-27.94" y="-60.96"/>
 </segment>
 <segment>
+<pinref part="BUZ" gate="1" pin="+"/>
+<pinref part="U$9" gate="G$1" pin="5V"/>
+</segment>
+<segment>
 <pinref part="BLE" gate="G$1" pin="4"/>
 <wire x1="106.68" y1="-15.24" x2="111.76" y2="-15.24" width="0.1524" layer="91"/>
 <label x="106.68" y="-15.24" size="1.778" layer="95"/>
@@ -12166,16 +12148,13 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </segment>
 <segment>
 <pinref part="IC1" gate="A" pin="GND"/>
-<wire x1="-68.58" y1="-60.96" x2="-76.2" y2="-60.96" width="0.1524" layer="91"/>
-<wire x1="-76.2" y1="-60.96" x2="-81.28" y2="-60.96" width="0.1524" layer="91"/>
+<wire x1="-68.58" y1="-60.96" x2="-81.28" y2="-60.96" width="0.1524" layer="91"/>
 <wire x1="-81.28" y1="-60.96" x2="-81.28" y2="-58.42" width="0.1524" layer="91"/>
 <pinref part="GND14" gate="1" pin="GND"/>
 <wire x1="-68.58" y1="-71.12" x2="-68.58" y2="-60.96" width="0.1524" layer="91"/>
 <junction x="-68.58" y="-60.96"/>
 <pinref part="C11" gate="G$1" pin="2"/>
 <wire x1="-93.98" y1="-58.42" x2="-81.28" y2="-58.42" width="0.1524" layer="91"/>
-<pinref part="R6" gate="G$1" pin="1"/>
-<junction x="-76.2" y="-60.96"/>
 </segment>
 <segment>
 <pinref part="BLE" gate="G$1" pin="1"/>
@@ -12191,11 +12170,6 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <pinref part="RTC" gate="G$1" pin="4"/>
 <wire x1="111.76" y1="33.02" x2="104.14" y2="33.02" width="0.1524" layer="91"/>
 <label x="104.14" y="33.02" size="1.778" layer="95"/>
-</segment>
-<segment>
-<pinref part="GND10" gate="1" pin="GND"/>
-<pinref part="BUZ" gate="1" pin="-"/>
-<wire x1="-71.12" y1="-38.1" x2="-63.5" y2="-38.1" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="RESET" class="0">
@@ -12385,8 +12359,8 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <segment>
 <pinref part="IC1" gate="A" pin="Q"/>
 <wire x1="-48.26" y1="-45.72" x2="-48.26" y2="-38.1" width="0.1524" layer="91"/>
-<pinref part="BUZ" gate="1" pin="+"/>
-<wire x1="-55.88" y1="-38.1" x2="-48.26" y2="-38.1" width="0.1524" layer="91"/>
+<pinref part="BUZ" gate="1" pin="-"/>
+<wire x1="-48.26" y1="-38.1" x2="-60.96" y2="-38.1" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$8" class="0">
@@ -12399,9 +12373,6 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <pinref part="IC1" gate="A" pin="R"/>
 <wire x1="-68.58" y1="-50.8" x2="-76.2" y2="-50.8" width="0.1524" layer="91"/>
 <label x="-81.28" y="-50.8" size="1.778" layer="95"/>
-<pinref part="R6" gate="G$1" pin="2"/>
-<junction x="-76.2" y="-50.8"/>
-<wire x1="-76.2" y1="-50.8" x2="-81.28" y2="-50.8" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <wire x1="53.34" y1="0" x2="48.26" y2="0" width="0.1524" layer="91"/>
