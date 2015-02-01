@@ -4,13 +4,15 @@
 #include "definitions.h"
 #include "GetAlarmCommand.h"
 
+extern AlarmsManager alarms;
+
 GetAlarmCommand::GetAlarmCommand(uint8_t message[]){
      alarmNumber = (AlarmNumber)message[1];      
 }
 
 void GetAlarmCommand::execute(){
-    AlarmT t = AlarmT(alarmNumber);
-    uint32_t alarmBinary = t.getIntRepresentation();
+    AlarmT alarm = alarms.getAlarm(alarmNumber);
+    uint32_t alarmBinary = alarm.getIntRepresentation();
     uint8_t bytes[4];
     BitManipulation::intToBytes(alarmBinary, bytes);
     uint8_t outMessage[6]  = { GETALARM, alarmNumber, 

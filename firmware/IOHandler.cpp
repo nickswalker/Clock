@@ -29,10 +29,9 @@ typedef enum{
 
 void IOHandler::displayTime(byte hour, byte minute, byte second){
     matrix.clear();
-    char dotsBitmask = 0;
-    dotsBitmask |= COLON;
-    boolean evenSecond = (second % 2) == 1;
-    if( Settings::getBool(BLINKCOLON) && evenSecond ){
+    char dotsBitmask = COLON;
+    boolean oddSecond = second & 1;
+    if( Settings::getBool(BLINKCOLON) && oddSecond ){
         //Toggle the colon bit
         dotsBitmask ^= COLON;
     }

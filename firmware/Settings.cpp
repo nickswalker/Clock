@@ -7,7 +7,7 @@
 //The remaining is left for alarms (3 bytes each)
 void Settings::setDefaults(){
   set(DISPLAYTWENTYFOURHOURTIME, (bool)true);
-  set(BLINKCOLON, (bool)true);
+  //set(BLINKCOLON, (bool)true);
   //Set alarm for 6:30
   #ifdef DEBUG
     Serial.println("Default settings set.");
