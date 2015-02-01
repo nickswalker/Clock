@@ -12,7 +12,7 @@
 
 typedef enum {
     DISPLAYTWENTYFOURHOURTIME = 1,
-    BLINKCOLON = 2,
+    BLINKCOLON = 20,
     AUTOBRIGHTNESS = 3,
     BRIGHTNESS = 4
 } Option;
